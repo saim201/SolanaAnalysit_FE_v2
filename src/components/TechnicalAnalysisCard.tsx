@@ -93,7 +93,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
   return (
     <CollapsibleCard
       title="Technical Analysis"
-      functionalities="6-step technical framework • Price action • Indicators"
+      functionalities="Price action • Indicators • Volume-driven"
       lastUpdated={analysis.timestamp || timestamp}
       defaultExpanded={false}
       isExpanded={isExpanded}
