@@ -8,7 +8,6 @@ import ReflectionAnalysisCard from './components/ReflectionAnalysisCard';
 import TraderAnalysisCard from './components/TraderAnalysisCard';
 import HistoricalPredictions from './components/HistoricalPredictions';
 import ProjectHighlightsModal from './components/ProjectHighlightsModal';
-import SystemBanner from './components/SystemBanner';
 import Dashboard from './components/Dashboard';
 
 function App() {
