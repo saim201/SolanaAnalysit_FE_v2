@@ -27,6 +27,8 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+fvenv/
+
 build
 coverage
 
