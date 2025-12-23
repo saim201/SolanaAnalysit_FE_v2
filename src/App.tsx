@@ -9,18 +9,21 @@ import TraderAnalysisCard from './components/TraderAnalysisCard';
 import HistoricalPredictions from './components/HistoricalPredictions';
 import ProjectHighlightsModal from './components/ProjectHighlightsModal';
 import Dashboard from './components/Dashboard';
+import LoadingScreen from './components/LoadingScreen';
 
 function App() {
   const [analysis, setAnalysis] = useState<TradeAnalysisResponse | null>(null);
   const [technicalData, setTechnicalData] = useState<TechnicalDataResponse | null>(null);
   const [tickerData, setTickerData] = useState<TickerResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [openCard, setOpenCard] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchLatestAnalysis = async () => {
+      setInitialLoading(true);
       try {
         const [latestAnalysis, techData, ticker] = await Promise.all([
           api.getLatestAnalysis(),
@@ -33,6 +36,8 @@ function App() {
         setTickerData(ticker);
       } catch {
         console.log('No previous analysis found, start fresh');
+      } finally {
+        setInitialLoading(false);
       }
     };
 
@@ -99,7 +104,12 @@ function App() {
   }
 
 
-  
+
+
+  // Show loading screen during initial data fetch
+  if (initialLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="min-h-screen">
