@@ -253,7 +253,7 @@ function App() {
       {/* Footer */}
       <footer className="glass-header mt-12 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-600">
-          <p className="font-medium">Solana (SOL/USDT) Swing Trading System • Multi-Agent AI Analysis</p>
+          <p className="font-medium">Solana (SOL/USDT) Swing Trading Analyst </p>
         </div>
       </footer>
 

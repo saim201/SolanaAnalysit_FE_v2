@@ -46,9 +46,9 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
               <h2 className="text-2xl font-bold text-gray-900">
                 Project Overview
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
+              {/* <p className="text-sm text-gray-600 mt-1">
                 Multi-Agent Solana Trading Analysis System
-              </p>
+              </p> */}
             </div>
             <button
               onClick={onClose}
