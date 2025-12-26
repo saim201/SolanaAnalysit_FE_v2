@@ -10,6 +10,7 @@ import HistoricalPredictions from './components/HistoricalPredictions';
 import ProjectHighlightsModal from './components/ProjectHighlightsModal';
 import Dashboard from './components/Dashboard';
 import LoadingScreen from './components/LoadingScreen';
+import ReactGA from 'react-ga4';
 
 function App() {
   const [analysis, setAnalysis] = useState<TradeAnalysisResponse | null>(null);
@@ -21,7 +22,41 @@ function App() {
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [openCard, setOpenCard] = useState<string | null>(null);
 
+  const handleCardToggle = (cardName: string) => {
+    const isExpanding = openCard !== cardName;
+
+    if (isExpanding) {
+      ReactGA.event({
+        category: 'Card Interaction',
+        action: 'Card Expanded',
+        label: cardName
+      });
+    }
+
+    setOpenCard(openCard === cardName ? null : cardName);
+  };
+
+  const handleProjectModalOpen = () => {
+    ReactGA.event({
+      category: 'Modal Interaction',
+      action: 'Project Info Opened',
+      label: 'Project Highlights Modal'
+    });
+    setShowProjectModal(true);
+  };
+
+  const handleProjectModalClose = () => {
+    ReactGA.event({
+      category: 'Modal Interaction',
+      action: 'Project Info Closed',
+      label: 'Project Highlights Modal'
+    });
+    setShowProjectModal(false);
+  };
+
   useEffect(() => {
+    ReactGA.send({ hitType: 'pageview', page: window.location.pathname, title: 'TradingMate Dashboard' });
+
     const fetchLatestAnalysis = async () => {
       setInitialLoading(true);
       try {
@@ -45,6 +80,12 @@ function App() {
   }, []);
 
   const handleAnalyse = async () => {
+    ReactGA.event({
+      category: 'User Interaction',
+      action: 'Run Analysis',
+      label: 'Analysis Button Clicked'
+    });
+
     setLoading(true);
     setError(null);
 
@@ -59,8 +100,22 @@ function App() {
 
       setTechnicalData(techData);
       setTickerData(ticker);
+
+      // Track successful analysis completion
+      ReactGA.event({
+        category: 'Analysis',
+        action: 'Analysis Completed',
+        label: 'Success'
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch analysis');
+
+      // Track analysis failure
+      ReactGA.event({
+        category: 'Analysis',
+        action: 'Analysis Failed',
+        label: err instanceof Error ? err.message : 'Unknown Error'
+      });
     } finally {
       setLoading(false);
     }
@@ -106,7 +161,6 @@ function App() {
 
 
 
-  // Show loading screen during initial data fetch
   if (initialLoading) {
     return <LoadingScreen />;
   }
@@ -125,7 +179,7 @@ function App() {
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setShowProjectModal(true)}
+                onClick={handleProjectModalOpen}
                 className="px-4 py-2 bg-white/60 hover:bg-white/80 text-gray-800 font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 border border-gray-200/60 shadow-sm backdrop-blur-sm"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,7 +250,7 @@ function App() {
                 analysis={analysis.technical_analysis}
                 technicalData={technicalData}
                 isExpanded={openCard === 'technical'}
-                onToggle={() => setOpenCard(openCard === 'technical' ? null : 'technical')}
+                onToggle={() => handleCardToggle('technical')}
                 timestamp={analysis.timestamp}
               />
             </div>
@@ -205,7 +259,7 @@ function App() {
               <NewsAnalysisCard
                 analysis={analysis.news_analysis}
                 isExpanded={openCard === 'news'}
-                onToggle={() => setOpenCard(openCard === 'news' ? null : 'news')}
+                onToggle={() => handleCardToggle('news')}
                 timestamp={analysis.timestamp}
               />
             </div>
@@ -214,7 +268,7 @@ function App() {
               <ReflectionAnalysisCard
                 analysis={analysis.reflection_analysis}
                 isExpanded={openCard === 'reflection'}
-                onToggle={() => setOpenCard(openCard === 'reflection' ? null : 'reflection')}
+                onToggle={() => handleCardToggle('reflection')}
                 timestamp={analysis.timestamp}
               />
             </div>
@@ -223,7 +277,7 @@ function App() {
               <TraderAnalysisCard
                 analysis={analysis.trader_analysis}
                 isExpanded={openCard === 'trader'}
-                onToggle={() => setOpenCard(openCard === 'trader' ? null : 'trader')}
+                onToggle={() => handleCardToggle('trader')}
               />
             </div>
 
@@ -231,7 +285,7 @@ function App() {
             <div className="mb-8">
               <HistoricalPredictions
                 isExpanded={openCard === 'historical'}
-                onToggle={() => setOpenCard(openCard === 'historical' ? null : 'historical')}
+                onToggle={() => handleCardToggle('historical')}
               />
             </div>
           </>
@@ -258,9 +312,9 @@ function App() {
       </footer>
 
       {/* Project Highlights Modal */}
-      <ProjectHighlightsModal 
-        isOpen={showProjectModal} 
-        onClose={() => setShowProjectModal(false)} 
+      <ProjectHighlightsModal
+        isOpen={showProjectModal}
+        onClose={handleProjectModalClose}
       />
     </div>
   );
