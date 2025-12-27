@@ -32,10 +32,10 @@ function App() {
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [progressSteps, setProgressSteps] = useState<ProgressStep[]>([
     { id: 'refresh_data', label: 'Fetching Real-Time Market Data', status: 'pending' },
-    { id: 'technical_agent', label: 'Running Technical Analysis Agent', status: 'pending' },
-    { id: 'news_agent', label: 'Running News Sentiment Agent', status: 'pending' },
-    { id: 'reflection_agent', label: 'Running Reflection Agent', status: 'pending' },
-    { id: 'trader_agent', label: 'Running Trader Decision Agent', status: 'pending' },
+    { id: 'technical_agent', label: 'Technical Agent', status: 'pending' },
+    { id: 'news_agent', label: 'Sentiment Agent', status: 'pending' },
+    { id: 'reflection_agent', label: 'Reflection Agent', status: 'pending' },
+    { id: 'trader_agent', label: 'Trader Agent', status: 'pending' },
     { id: 'complete', label: 'Finalising Results', status: 'pending' },
   ]);
 
@@ -109,10 +109,10 @@ function App() {
 
     setProgressSteps([
       { id: 'refresh_data', label: 'Fetching Real-Time Market Data', status: 'pending' },
-      { id: 'technical_agent', label: 'Running Technical Analysis Agent', status: 'pending' },
-      { id: 'news_agent', label: 'Running News Sentiment Agent', status: 'pending' },
-      { id: 'reflection_agent', label: 'Running Reflection Agent', status: 'pending' },
-      { id: 'trader_agent', label: 'Running Trader Decision Agent', status: 'pending' },
+      { id: 'technical_agent', label: 'Technical Agent', status: 'pending' },
+      { id: 'news_agent', label: 'Sentiment Agent', status: 'pending' },
+      { id: 'reflection_agent', label: 'Reflection Agent', status: 'pending' },
+      { id: 'trader_agent', label: 'Trader Agent', status: 'pending' },
       { id: 'complete', label: 'Finalising Results', status: 'pending' },
     ]);
 

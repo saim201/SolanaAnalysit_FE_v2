@@ -129,53 +129,114 @@ export const api = {
   },
 
   /**
-   * Stream analysis with real-time progress updates using Server-Sent Events (SSE)
+   * Run analysis with real-time progress updates (PostgreSQL-backed, Lambda compatible)
    * @param onProgress Callback for progress updates
    * @returns Promise that resolves with final analysis result
    */
   async streamAnalysis(
     onProgress: (step: string, status: string, message: string) => void
   ): Promise<TradeAnalysisResponse> {
-    return new Promise((resolve, reject) => {
-      const eventSource = new EventSource(`${API_BASE_URL}/api/sol/analyse/stream`, {
-        withCredentials: false,
+    // Generate a unique job ID for this analysis run
+    const job_id = `job_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+    // Start polling for progress immediately
+    const seenSteps = new Set<string>();
+    let pollCount = 0;
+    const maxPolls = 180; // 3 minutes with 1s intervals
+    let consecutiveErrors = 0;
+    const maxConsecutiveErrors = 5; // Stop after 5 consecutive errors
+
+    const pollProgress = async (): Promise<TradeAnalysisResponse> => {
+      return new Promise((resolve, reject) => {
+        const pollInterval = setInterval(async () => {
+          pollCount++;
+
+          if (pollCount > maxPolls) {
+            clearInterval(pollInterval);
+            reject(new Error('Analysis timeout - exceeded maximum wait time'));
+            return;
+          }
+
+          try {
+            const progressResponse = await fetch(
+              `${API_BASE_URL}/api/sol/analyse/progress/${job_id}`,
+              {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+              }
+            );
+
+            if (!progressResponse.ok) {
+              consecutiveErrors++;
+              if (consecutiveErrors >= maxConsecutiveErrors) {
+                clearInterval(pollInterval);
+                reject(new Error('Backend connection failed - please check if server is running'));
+                return;
+              }
+              // Continue polling for a few attempts (progress might not exist yet)
+              return;
+            }
+
+            // Reset error counter on successful response
+            consecutiveErrors = 0;
+
+            const data = await progressResponse.json();
+
+            // Process new progress events
+            if (data.progress && Array.isArray(data.progress)) {
+              for (const event of data.progress) {
+                const eventKey = `${event.step}-${event.status}`;
+                if (!seenSteps.has(eventKey)) {
+                  seenSteps.add(eventKey);
+                  onProgress(event.step, event.status, event.message);
+                }
+              }
+            }
+
+            // Check if complete
+            if (data.status === 'completed') {
+              clearInterval(pollInterval);
+              // Get the final result from /latest endpoint
+              const finalResult = await this.getLatestAnalysis();
+              resolve(finalResult);
+            } else if (data.status === 'error') {
+              clearInterval(pollInterval);
+              reject(new Error('Analysis failed on backend'));
+            }
+          } catch (error) {
+            console.error('Polling error:', error);
+            consecutiveErrors++;
+            if (consecutiveErrors >= maxConsecutiveErrors) {
+              clearInterval(pollInterval);
+              reject(new Error('Backend connection lost - please check if server is running'));
+            }
+          }
+        }, 1000); // Poll every second
       });
+    };
 
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-
-          // Call progress callback
-          onProgress(data.step, data.status, data.message);
-
-          // If we receive the complete event with result, resolve and close
-          if (data.step === 'complete' && data.result) {
-            eventSource.close();
-            resolve(data.result);
+    // Start both the analysis call and progress polling
+    try {
+      const [, result] = await Promise.all([
+        // Start the analysis (this will take 20-30 seconds)
+        fetch(`${API_BASE_URL}/api/sol/analyse?job_id=${job_id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        }).then(async (response) => {
+          if (!response.ok) {
+            throw new Error('Failed to start analysis - server returned error');
           }
+          return response.json();
+        }),
+        // Poll for progress updates
+        pollProgress()
+      ]);
 
-          // If we receive an error event, reject and close
-          if (data.step === 'error') {
-            eventSource.close();
-            reject(new Error(data.message));
-          }
-        } catch (error) {
-          console.error('Error parsing SSE data:', error);
-        }
-      };
-
-      eventSource.onerror = (error) => {
-        console.error('SSE connection error:', error);
-        eventSource.close();
-        reject(new Error('Connection to server lost'));
-      };
-
-      // Timeout after 2 minutes
-      setTimeout(() => {
-        eventSource.close();
-        reject(new Error('Analysis timeout'));
-      }, 120000);
-    });
+      return result;
+    } catch (error) {
+      // Ensure polling stops if analysis call fails
+      throw error;
+    }
   },
 };
 
