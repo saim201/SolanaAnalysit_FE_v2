@@ -12,7 +12,7 @@ interface TraderAnalysisCardProps {
 export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, timestamp }: TraderAnalysisCardProps) {
   return (
     <CollapsibleCard
-      title="Trading Analysis"
+      title="Trading Analyst"
       functionalities="3-agent synthesis • Confidence weighting • Trade execution"
       lastUpdated={analysis.timestamp || timestamp}
       defaultExpanded={false}

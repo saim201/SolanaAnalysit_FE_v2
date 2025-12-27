@@ -12,7 +12,7 @@ interface ReflectionAnalysisCardProps {
 export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle, timestamp }: ReflectionAnalysisCardProps) {
   return (
     <CollapsibleCard
-      title="Reflection Analysis"
+      title="Reflection Analyst"
       functionalities="Agreement analysis • Blind spot detection • Risk assessment"
       lastUpdated={analysis.timestamp || timestamp}
       defaultExpanded={false}

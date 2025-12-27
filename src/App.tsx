@@ -30,6 +30,7 @@ function App() {
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [openCard, setOpenCard] = useState<string | null>(null);
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [progressSteps, setProgressSteps] = useState<ProgressStep[]>([
     { id: 'refresh_data', label: 'Fetching Real-Time Market Data', status: 'pending' },
     { id: 'technical_agent', label: 'Technical Agent', status: 'pending' },
@@ -96,6 +97,8 @@ function App() {
     fetchLatestAnalysis();
   }, []);
 
+
+
   const handleAnalyse = async () => {
     ReactGA.event({
       category: 'User Interaction',
@@ -134,7 +137,6 @@ function App() {
 
       setAnalysis(analysisData);
 
-      // Fetch additional data after analysis completes
       const [techData, ticker] = await Promise.all([
         api.getTechnicalData(),
         api.getTicker()
@@ -143,36 +145,37 @@ function App() {
       setTechnicalData(techData);
       setTickerData(ticker);
 
-      // Track successful analysis completion
       ReactGA.event({
         category: 'Analysis',
         action: 'Analysis Completed',
         label: 'Success'
       });
 
-      // Close modal after a brief delay to show completion
       setTimeout(() => {
         setShowProgressModal(false);
+        setShowSuccessAlert(true);
+        // Auto-hide alert after 7 seconds
+        setTimeout(() => {
+          setShowSuccessAlert(false);
+        }, 7000);
       }, 1500);
+
+
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch analysis');
-
-      // Update progress steps to show error
       setProgressSteps(prevSteps =>
         prevSteps.map(s =>
           s.status === 'running' ? { ...s, status: 'error' as const, message: 'Failed' } : s
         )
       );
 
-      // Track analysis failure
       ReactGA.event({
         category: 'Analysis',
         action: 'Analysis Failed',
         label: err instanceof Error ? err.message : 'Unknown Error'
       });
 
-      // Close modal after showing error
       setTimeout(() => {
         setShowProgressModal(false);
       }, 3000);
@@ -182,9 +185,9 @@ function App() {
     }
   };
 
-  console.log("Analysts Data: ", analysis)
-  console.log("technical Data: ", technicalData)
-  console.log("ticker Data: ", tickerData)
+  // console.log("Analysts Data: ", analysis)
+  // console.log("technical Data: ", technicalData)
+  // console.log("ticker Data: ", tickerData)
 
 
   const getMarketData = () => {
@@ -228,6 +231,31 @@ function App() {
 
   return (
     <div className="min-h-screen">
+      {/* Success Alert */}
+      {showSuccessAlert && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slide-down">
+          <div className="bg-green-50/95 border border-green-200/80 rounded-xl px-6 py-4 shadow-lg backdrop-blur-md flex items-center gap-3 min-w-[400px]">
+            <div className="flex-shrink-0">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-green-800 font-semibold">Analysis Completed Successfully!</p>
+              <p className="text-green-700 text-sm">All agents have finished processing the latest market data.</p>
+            </div>
+            <button
+              onClick={() => setShowSuccessAlert(false)}
+              className="flex-shrink-0 text-green-600 hover:text-green-800 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="glass-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -300,9 +328,9 @@ function App() {
 
             {/* Agent Analysis Cards */}
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Detailed Agent Analysis</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Detailed Analysis</h2>
               <p className="text-sm text-gray-600">
-                Expand each card to view full reasoning, complete data breakdown, and chain-of-thought process
+                Expand each card to view full reasoning, complete data breakdown, and chain-of-thought process of each specialised analyst
               </p>
             </div>
 

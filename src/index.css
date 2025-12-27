@@ -103,3 +103,19 @@ body {
 .text-tertiary {
   color: rgba(107, 114, 128, 0.85);
 }
+
+/* Success Alert Animation */
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.4s ease-out;
+}

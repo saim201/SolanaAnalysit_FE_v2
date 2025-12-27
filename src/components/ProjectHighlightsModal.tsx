@@ -11,10 +11,10 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
     {
       name: "Technical Agent",
       weight: "40%",
-      role: "Analyzes price action, indicators (RSI, MACD, EMA), support/resistance levels, and volume patterns to generate technical signals."
+      role: "Analyses price action, indicators (RSI, MACD, EMA), support/resistance levels, and volume patterns to generate technical signals."
     },
     {
-      name: "News Agent",
+      name: "Sentiment Agent",
       weight: "30%",
       role: "Processes market news and sentiment from RSS feeds to identify potential catalysts and market-moving events."
     },
@@ -158,7 +158,7 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
                   <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  News sentiment analysis
+                  Sentiment analysis
                 </li>
               </ul>
             </div>

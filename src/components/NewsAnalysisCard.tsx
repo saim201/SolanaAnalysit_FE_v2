@@ -14,7 +14,7 @@ export default function NewsAnalysisCard({ analysis, isExpanded, onToggle, times
 
   return (
     <CollapsibleCard
-      title="News Sentiment"
+      title="Sentiment Analyst"
       functionalities="Event classification • Sentiment scoring • Risk detection"
       lastUpdated={analysis.timestamp || timestamp}
       defaultExpanded={false}
