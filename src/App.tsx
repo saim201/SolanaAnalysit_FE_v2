@@ -10,7 +10,15 @@ import HistoricalPredictions from './components/HistoricalPredictions';
 import ProjectHighlightsModal from './components/ProjectHighlightsModal';
 import Dashboard from './components/Dashboard';
 import LoadingScreen from './components/LoadingScreen';
+import AnalysisProgressModal from './components/AnalysisProgressModal';
 import ReactGA from 'react-ga4';
+
+interface ProgressStep {
+  id: string;
+  label: string;
+  status: 'pending' | 'running' | 'completed' | 'error' | 'warning';
+  message?: string;
+}
 
 function App() {
   const [analysis, setAnalysis] = useState<TradeAnalysisResponse | null>(null);
@@ -21,6 +29,15 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [openCard, setOpenCard] = useState<string | null>(null);
+  const [showProgressModal, setShowProgressModal] = useState(false);
+  const [progressSteps, setProgressSteps] = useState<ProgressStep[]>([
+    { id: 'refresh_data', label: 'Fetching Real-Time Market Data', status: 'pending' },
+    { id: 'technical_agent', label: 'Running Technical Analysis Agent', status: 'pending' },
+    { id: 'news_agent', label: 'Running News Sentiment Agent', status: 'pending' },
+    { id: 'reflection_agent', label: 'Running Reflection Agent', status: 'pending' },
+    { id: 'trader_agent', label: 'Running Trader Decision Agent', status: 'pending' },
+    { id: 'complete', label: 'Finalising Results', status: 'pending' },
+  ]);
 
   const handleCardToggle = (cardName: string) => {
     const isExpanding = openCard !== cardName;
@@ -88,11 +105,36 @@ function App() {
 
     setLoading(true);
     setError(null);
+    setShowProgressModal(true);
+
+    setProgressSteps([
+      { id: 'refresh_data', label: 'Fetching Real-Time Market Data', status: 'pending' },
+      { id: 'technical_agent', label: 'Running Technical Analysis Agent', status: 'pending' },
+      { id: 'news_agent', label: 'Running News Sentiment Agent', status: 'pending' },
+      { id: 'reflection_agent', label: 'Running Reflection Agent', status: 'pending' },
+      { id: 'trader_agent', label: 'Running Trader Decision Agent', status: 'pending' },
+      { id: 'complete', label: 'Finalising Results', status: 'pending' },
+    ]);
 
     try {
-      const analysisData = await api.getTradeAnalysis();
+      const analysisData = await api.streamAnalysis((step, status, message) => {
+        setProgressSteps(prevSteps =>
+          prevSteps.map(s => {
+            if (s.id === step) {
+              return {
+                ...s,
+                status: status as ProgressStep['status'],
+                message: message
+              };
+            }
+            return s;
+          })
+        );
+      });
+
       setAnalysis(analysisData);
 
+      // Fetch additional data after analysis completes
       const [techData, ticker] = await Promise.all([
         api.getTechnicalData(),
         api.getTicker()
@@ -107,8 +149,21 @@ function App() {
         action: 'Analysis Completed',
         label: 'Success'
       });
+
+      // Close modal after a brief delay to show completion
+      setTimeout(() => {
+        setShowProgressModal(false);
+      }, 1500);
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch analysis');
+
+      // Update progress steps to show error
+      setProgressSteps(prevSteps =>
+        prevSteps.map(s =>
+          s.status === 'running' ? { ...s, status: 'error' as const, message: 'Failed' } : s
+        )
+      );
 
       // Track analysis failure
       ReactGA.event({
@@ -116,6 +171,12 @@ function App() {
         action: 'Analysis Failed',
         label: err instanceof Error ? err.message : 'Unknown Error'
       });
+
+      // Close modal after showing error
+      setTimeout(() => {
+        setShowProgressModal(false);
+      }, 3000);
+
     } finally {
       setLoading(false);
     }
@@ -315,6 +376,12 @@ function App() {
       <ProjectHighlightsModal
         isOpen={showProjectModal}
         onClose={handleProjectModalClose}
+      />
+
+      {/* Analysis Progress Modal */}
+      <AnalysisProgressModal
+        isOpen={showProgressModal}
+        steps={progressSteps}
       />
     </div>
   );

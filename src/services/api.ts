@@ -127,5 +127,55 @@ export const api = {
       throw error;
     }
   },
+
+  /**
+   * Stream analysis with real-time progress updates using Server-Sent Events (SSE)
+   * @param onProgress Callback for progress updates
+   * @returns Promise that resolves with final analysis result
+   */
+  async streamAnalysis(
+    onProgress: (step: string, status: string, message: string) => void
+  ): Promise<TradeAnalysisResponse> {
+    return new Promise((resolve, reject) => {
+      const eventSource = new EventSource(`${API_BASE_URL}/api/sol/analyse/stream`, {
+        withCredentials: false,
+      });
+
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+
+          // Call progress callback
+          onProgress(data.step, data.status, data.message);
+
+          // If we receive the complete event with result, resolve and close
+          if (data.step === 'complete' && data.result) {
+            eventSource.close();
+            resolve(data.result);
+          }
+
+          // If we receive an error event, reject and close
+          if (data.step === 'error') {
+            eventSource.close();
+            reject(new Error(data.message));
+          }
+        } catch (error) {
+          console.error('Error parsing SSE data:', error);
+        }
+      };
+
+      eventSource.onerror = (error) => {
+        console.error('SSE connection error:', error);
+        eventSource.close();
+        reject(new Error('Connection to server lost'));
+      };
+
+      // Timeout after 2 minutes
+      setTimeout(() => {
+        eventSource.close();
+        reject(new Error('Analysis timeout'));
+      }, 120000);
+    });
+  },
 };
 
