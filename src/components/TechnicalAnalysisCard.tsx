@@ -117,10 +117,10 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
       onToggle={onToggle}
     >
       <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
 
           {/* LEFT COLUMN */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
 
             {/* Summary */}
             {analysis.summary && (
@@ -228,7 +228,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
           </div>
 
           {/* RIGHT COLUMN */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
 
             {/* Trade Setup */}
             {/* {analysis.trade_setup && (
