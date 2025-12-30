@@ -205,54 +205,13 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
               </div>
             )}
 
-            {/* Confidence Reasoning */}
-            {analysis.confidence_reasoning && (
+            {/* Market Condition */}
+            {analysis.market_condition && (
               <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Confidence Analysis</h3>
-                <div className="glass-section p-4 rounded-xl space-y-3">
-                  {analysis.confidence_reasoning.supporting.length > 0 && (
-                    <div>
-                      <div className="text-xs font-semibold text-green-700 mb-1.5">Supporting Factors</div>
-                      <div className="space-y-0.5">
-                        {analysis.confidence_reasoning.supporting.map((factor, idx) => (
-                          <div key={idx} className="text-xs text-gray-700">• {factor}</div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {analysis.confidence_reasoning.concerns.length > 0 && (
-                    <div className="pt-3 border-t border-gray-200">
-                      <div className="text-xs font-semibold text-amber-700 mb-1.5">Concerns</div>
-                      <div className="space-y-0.5">
-                        {analysis.confidence_reasoning.concerns.map((concern, idx) => (
-                          <div key={idx} className="text-xs text-gray-700">• {concern}</div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="text-xs font-semibold text-gray-900 mb-1.5">Overall Assessment</div>
-                    <p className="text-xs text-gray-700 leading-relaxed">{analysis.confidence_reasoning.assessment}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-          </div>
-
-          {/* RIGHT COLUMN */}
-          <div className="space-y-6">
-
-            {/* Market Condition & Confidence */}
-            <div className="space-y-1">
-              <h3 className="text-sm font-semibold tracking-wide">Market State</h3>
-              <div className="glass-section p-4 rounded-xl space-y-2">
-                {analysis.market_condition && (
-                  <div className="flex items-center justify-between pb-2 border-b border-gray-200">
-                    <span className="text-sm text-gray-700">Condition</span>
-                    <span className={`text-sm font-semibold ${
+                <div className="glass-section p-4 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-700">Current market condition</span>
+                    <span className={`text-lg font-bold ${
                       analysis.market_condition === 'TRENDING' ? 'text-blue-700' :
                       analysis.market_condition === 'RANGING' ? 'text-gray-700' :
                       analysis.market_condition === 'VOLATILE' ? 'text-red-700' :
@@ -261,22 +220,18 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
                       {analysis.market_condition}
                     </span>
                   </div>
-                )}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">Confidence</span>
-                  <span className="text-2xl font-bold text-gray-900">{(analysis.confidence * 100).toFixed(0)}%</span>
                 </div>
-                {(analysis.trade_setup?.timeframe || analysis.timeframe) && (
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                    <span className="text-xs text-gray-600">Timeframe</span>
-                    <span className="text-xs text-gray-900 font-medium">{analysis.trade_setup?.timeframe || analysis.timeframe}</span>
-                  </div>
-                )}
               </div>
-            </div>
+            )}
+
+
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="space-y-6">
 
             {/* Trade Setup */}
-            {analysis.trade_setup && (
+            {/* {analysis.trade_setup && (
               <div className="space-y-1">
                 <h3 className="text-sm font-semibold tracking-wide">Trade Setup</h3>
                 <div className="glass-section p-4 rounded-xl space-y-2">
@@ -312,7 +267,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
                   )}
                 </div>
               </div>
-            )}
+            )} */}
 
             {/* Action Plan */}
             {analysis.action_plan && (
@@ -375,7 +330,18 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
             {/* Invalidation Triggers */}
             {analysis.invalidation && analysis.invalidation.length > 0 && (
               <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Invalidation Triggers</h3>
+                <div className="flex items-center gap-1.5">
+                  <h3 className="text-sm font-semibold tracking-wide">Invalidation Triggers</h3>
+                  <div className="group relative">
+                    <svg className="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-56 p-3 bg-gray-700 text-white text-xs rounded-lg shadow-lg">
+                      <div className="absolute -top-1 left-2 w-2 h-2 bg-gray-700 rotate-45"></div>
+                      Conditions that prove this analysis is wrong. Exit immediately if any trigger occurs.
+                    </div>
+                  </div>
+                </div>
                 <div className="glass-section p-4 rounded-xl">
                   <div className="space-y-1">
                     {analysis.invalidation.map((trigger, idx) => (
@@ -384,6 +350,57 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
                         <span className="flex-1">{trigger}</span>
                       </div>
                     ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Agent Confidence */}
+            <div className="space-y-1">
+              <div className="glass-section p-4 rounded-xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">Analyst's Confidence </span>
+                  <span className="text-2xl font-bold text-gray-900">{(analysis.confidence * 100).toFixed(0)}%</span>
+                </div>
+                {(analysis.trade_setup?.timeframe || analysis.timeframe) && (
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                    <span className="text-xs text-gray-600">Timeframe</span>
+                    <span className="text-xs text-gray-900 font-medium">{analysis.trade_setup?.timeframe || analysis.timeframe}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Confidence Reasoning */}
+            {analysis.confidence_reasoning && (
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold tracking-wide">Confidence Breakdown</h3>
+                <div className="glass-section p-4 rounded-xl space-y-3">
+                  {analysis.confidence_reasoning.supporting.length > 0 && (
+                    <div>
+                      <div className="text-xs font-semibold text-green-700 mb-1.5">Supporting Factors</div>
+                      <div className="space-y-0.5">
+                        {analysis.confidence_reasoning.supporting.map((factor, idx) => (
+                          <div key={idx} className="text-xs text-gray-700">• {factor}</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {analysis.confidence_reasoning.concerns.length > 0 && (
+                    <div className="pt-3 border-t border-gray-200">
+                      <div className="text-xs font-semibold text-amber-700 mb-1.5">Concerns</div>
+                      <div className="space-y-0.5">
+                        {analysis.confidence_reasoning.concerns.map((concern, idx) => (
+                          <div key={idx} className="text-xs text-gray-700">• {concern}</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-3 border-t border-gray-200">
+                    <div className="text-xs font-semibold text-gray-900 mb-1.5">Overall Assessment</div>
+                    <p className="text-xs text-gray-700 leading-relaxed">{analysis.confidence_reasoning.assessment}</p>
                   </div>
                 </div>
               </div>
