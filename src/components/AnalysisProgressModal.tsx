@@ -124,7 +124,7 @@ const AnalysisProgressModal = ({ isOpen, steps }: AnalysisProgressModalProps) =>
         </div>
 
         {/* Progress Bar */}
-        <div className="mt-6 glass-section p-4 rounded-xl border border-gray-200/40">
+        {/* <div className="mt-6 glass-section p-4 rounded-xl border border-gray-200/40">
           <div className="flex justify-between text-xs font-medium text-gray-700 mb-2">
             <span>Overall Progress</span>
             <span>
@@ -139,7 +139,7 @@ const AnalysisProgressModal = ({ isOpen, steps }: AnalysisProgressModalProps) =>
               }}
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Info Text */}
         <div className="mt-6 text-center">
