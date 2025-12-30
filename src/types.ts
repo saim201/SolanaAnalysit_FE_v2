@@ -2,29 +2,78 @@
 
 export interface TechnicalAnalysis {
   timestamp?: string;
-  recommendation: "BUY" | "SELL" | "HOLD";
+  recommendation: "BUY" | "SELL" | "HOLD" | "WAIT";
   confidence: number;
+  market_condition?: "TRENDING" | "RANGING" | "VOLATILE" | "QUIET";
+
+  // New v2 fields
+  summary?: string;
+  thinking?: Array<string> | string;  // Array in v2, string in old format
+  analysis?: {
+    trend: {
+      direction: string;
+      strength: string;
+      detail: string;
+    };
+    momentum: {
+      direction: string;
+      strength: string;
+      detail: string;
+    };
+    volume: {
+      quality: string;
+      ratio: number;
+      detail: string;
+    };
+  };
+  trade_setup?: {
+    viability: string;
+    entry: number | null;
+    stop_loss: number | null;
+    take_profit: number | null;
+    risk_reward: string;
+    timeframe: string;
+  };
+  action_plan?: {
+    primary: string;
+    alternative: string;
+    if_in_position: string;
+    avoid: string;
+  };
+  watch_list?: {
+    next_24h: string[];
+    next_48h: string[];
+  };
+  invalidation?: string[];
+  confidence_reasoning?: {
+    supporting: string[];
+    concerns: string[];
+    assessment: string;
+  };
+
+  // Legacy fields (for backward compatibility)
   confidence_breakdown?: {
-    trend_strength?: number;
-    momentum_confirmation?: number;
-    volume_quality?: number;
-    risk_reward?: number;
-    final_adjusted?: number;
+    trend_strength?: { score: number; reasoning: string; };
+    momentum_quality?: { score: number; reasoning: string; };
+    volume_conviction?: { score: number; reasoning: string; };
+    risk_reward_setup?: { score: number; reasoning: string; };
+    final_adjusted?: { score: number; reasoning: string; };
   };
   timeframe?: string | null;
   key_signals?: string[];
   entry_level?: number | null;
   stop_loss?: number | null;
   take_profit?: number | null;
-  recommendation_summary: string,
-  watch_list?: {
-    confirmation_signals: string[];
-    invalidation_signals: string[];
-    key_levels_24_48h: string[];
-    time_based_triggers: string[];
-  },
-  reasoning: string;
-  thinking?: string;
+  recommendation_summary?: string;
+  indicators_analysis?: {
+    primary_indicators_used: string[];
+    selection_reasoning: string;
+  };
+  btc_correlation_impact?: {
+    level: string;
+    reasoning: string;
+  };
+  reasoning?: string;
 }
 
 
@@ -147,8 +196,8 @@ export interface TradeAnalysisResponse {
 export interface TechnicalDataResponse {
   currentPrice: number;
   priceChange24h: number;
+  ema20: number;
   ema50: number;
-  ema200: number;
   support: number;
   resistance: number;
   volume_current: number;
@@ -158,13 +207,11 @@ export interface TechnicalDataResponse {
   macd_line: number;
   macd_signal: number;
   timestamp: string;
-  ema20: number;
-  bb_upper: number;
-  bb_lower: number;
-  atr: number;
-  support1: number;
-  resistance1: number;
-  pivot_weekly: number;
+  bb_upper?: number;
+  bb_lower?: number;
+  atr?: number;
+  support1?: number;
+  resistance1?: number;
 }
 
 export interface TickerResponse {

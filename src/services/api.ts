@@ -1,38 +1,6 @@
 import type { TradeAnalysisResponse, TechnicalDataResponse, TickerResponse } from '../types';
-import { API_CONFIG } from '../config';
-import { mockTradeAnalysis, mockMarketData } from '../data/mockData';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-const convertMockToTechnicalData = (): TechnicalDataResponse => {
-  const macdStatus = mockMarketData.indicators.macd as 'Bullish' | 'Bearish' | 'Neutral';
-  const macdLine = macdStatus === 'Bullish' ? 0.5 :
-                   macdStatus === 'Bearish' ? -0.5 : 0;
-  const macdSignal = 0;
-
-  return {
-    currentPrice: mockMarketData.currentPrice,
-    priceChange24h: mockMarketData.priceChange24h,
-    ema50: mockMarketData.ema50,
-    ema200: mockMarketData.ema200,
-    support: mockMarketData.support,
-    resistance: mockMarketData.resistance,
-    volume_current: mockMarketData.volume.current,
-    volume_average: mockMarketData.volume.average,
-    volume_ratio: mockMarketData.volume.current,
-    rsi: mockMarketData.indicators.rsi,
-    macd_line: macdLine,
-    macd_signal: macdSignal,
-    timestamp: new Date().toISOString(),
-    ema20: 0,
-    bb_upper: 0,
-    bb_lower: 0,
-    atr: 0,
-    support1: 0,
-    resistance1: 0,
-    pivot_weekly: 0,
-  };
-};
 
 
 
@@ -58,13 +26,7 @@ export const api = {
   },
 
   async getTradeAnalysis(): Promise<TradeAnalysisResponse> {
-    if (!API_CONFIG.USE_REAL_ANALYSIS_API) {
-      console.log('Using MOCK data for analysis');
-      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
-      return mockTradeAnalysis;
-    }
-
-    console.log('Using REAL API for analysis');
+    console.log('Fetching trade analysis from API');
     try {
       const response = await fetch(`${API_BASE_URL}/api/sol/analyse`, {
         method: 'POST',
@@ -85,13 +47,7 @@ export const api = {
 
 
   async getTechnicalData(): Promise<TechnicalDataResponse> {
-    if (!API_CONFIG.USE_REAL_TECHNICAL_DATA_API) {
-      console.log(' Using MOCK data for technical data');
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
-      return convertMockToTechnicalData();
-    }
-
-    console.log(' Using REAL API for technical data');
+    console.log('Fetching technical data from API');
     try {
       const response = await fetch(`${API_BASE_URL}/api/sol/technical_data`, {
         method: 'GET',
@@ -110,7 +66,7 @@ export const api = {
   },
 
   async getTicker(): Promise<TickerResponse> {
-    console.log(' Using REAL API for ticker data');
+    console.log('Fetching ticker data from API');
     try {
       const response = await fetch(`${API_BASE_URL}/api/sol/ticker`, {
         method: 'GET',
@@ -128,6 +84,7 @@ export const api = {
     }
   },
 
+  
   /**
    * Run analysis with real-time progress updates (PostgreSQL-backed, Lambda compatible)
    * @param onProgress Callback for progress updates
@@ -216,27 +173,22 @@ export const api = {
     };
 
     // Start both the analysis call and progress polling
-    try {
-      const [, result] = await Promise.all([
-        // Start the analysis (this will take 20-30 seconds)
-        fetch(`${API_BASE_URL}/api/sol/analyse?job_id=${job_id}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-        }).then(async (response) => {
-          if (!response.ok) {
-            throw new Error('Failed to start analysis - server returned error');
-          }
-          return response.json();
-        }),
-        // Poll for progress updates
-        pollProgress()
-      ]);
+    const [, result] = await Promise.all([
+      // Start the analysis (this will take 20-30 seconds)
+      fetch(`${API_BASE_URL}/api/sol/analyse?job_id=${job_id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }).then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Failed to start analysis - server returned error');
+        }
+        return response.json();
+      }),
+      // Poll for progress updates
+      pollProgress()
+    ]);
 
-      return result;
-    } catch (error) {
-      // Ensure polling stops if analysis call fails
-      throw error;
-    }
+    return result;
   },
 };
 

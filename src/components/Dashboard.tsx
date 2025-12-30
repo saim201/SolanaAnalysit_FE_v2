@@ -3,8 +3,8 @@ import type { TradeAnalysisResponse, TickerResponse } from '../types';
 interface MarketData {
   currentPrice: number;
   priceChange24h: number;
+  ema20: number;
   ema50: number;
-  ema200: number;
   support: number;
   resistance: number;
   volume: {

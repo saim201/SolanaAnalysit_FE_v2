@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import type { TradeAnalysisResponse, TechnicalDataResponse, TickerResponse } from './types';
-import { mockMarketDataDefaults } from './data/mockData';
 import { api } from './services/api';
 import TechnicalAnalysisCard from './components/TechnicalAnalysisCard';
 import NewsAnalysisCard from './components/NewsAnalysisCard';
@@ -192,7 +191,7 @@ function App() {
 
   const getMarketData = () => {
     if (!technicalData) {
-      return null; 
+      return null;
     }
     let volumeStatus: 'LOW' | 'NORMAL' | 'HIGH' = 'NORMAL';
     if (technicalData.volume_ratio < 0.7) volumeStatus = 'LOW';
@@ -205,7 +204,7 @@ function App() {
       currentPrice: technicalData.currentPrice,
       priceChange24h: technicalData.priceChange24h,
       ema50: technicalData.ema50,
-      ema200: technicalData.ema200,
+      ema20: technicalData.ema20,
       support: technicalData.support,
       resistance: technicalData.resistance,
       volume: {
@@ -213,12 +212,22 @@ function App() {
         average: technicalData.volume_average,
         status: volumeStatus
       },
-      trend: mockMarketDataDefaults.trend,
+      trend: {
+        daily: 'Neutral' as const,
+        fourHour: 'Neutral' as const,
+        adx: 0,
+        adxStatus: 'Weak' as const
+      },
       indicators: {
         rsi: technicalData.rsi,
         macd: macdStatus
       },
-      trackRecord: mockMarketDataDefaults.trackRecord
+      trackRecord: {
+        wins: 0,
+        holds: 0,
+        losses: 0,
+        accuracy: 0
+      }
     };
   }
 
