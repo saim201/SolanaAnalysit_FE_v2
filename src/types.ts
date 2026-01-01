@@ -77,40 +77,48 @@ export interface TechnicalAnalysis {
 }
 
 
-export interface NewsAnalysis {
+// New SentimentAnalysis interface (combines CFGI + News)
+export interface SentimentAnalysis {
   timestamp?: string;
-  overall_sentiment: number;
-  sentiment_label: string;
+  signal: string;  // BULLISH, BEARISH, NEUTRAL, etc.
   confidence: number;
-  all_recent_news?: Array<{
-    title: string;
-    published_at: string;
-    url: string;
-    source: string;
-  }>;
+
+  market_fear_greed: {
+    score: number;
+    classification: string;  // Extreme Fear, Fear, Neutral, Greed, Extreme Greed
+    social?: number;
+    whales?: number;
+    trends?: number;
+    interpretation: string;
+  };
+
+  news_sentiment: {
+    score: number;
+    label: string;
+    catalysts_count: number;
+    risks_count: number;
+  };
+
   key_events: Array<{
     title: string;
     published_at: string;
     url?: string;
     type: string;
-    source_credibility: string;
-    news_age_hours: number;
-    impact: string;
-    reasoning: string;
+    impact: string;  // BULLISH, BEARISH, NEUTRAL
+    source: string;
+    reasoning?: string;
   }>;
-  event_summary: {
-    actionable_catalysts: number;
-    hype_noise: number;
-    critical_risks: number;
-  };
+
   risk_flags: string[];
-  stance: string;
-  suggested_timeframe: string;
-  recommendation_summary: string;
+  summary: string;
   what_to_watch: string[];
   invalidation: string;
+  suggested_timeframe: string;
   thinking?: string;
 }
+
+// Backward compatibility: NewsAnalysis now points to SentimentAnalysis
+export type NewsAnalysis = SentimentAnalysis;
 
 export interface ReflectionAnalysis {
   timestamp?: string;
@@ -187,7 +195,7 @@ export interface TraderAnalysis {
 
 export interface TradeAnalysisResponse {
   technical_analysis: TechnicalAnalysis;
-  news_analysis: NewsAnalysis;
+  news_analysis: SentimentAnalysis;  // API still uses 'news_analysis' but contains SentimentAnalysis data
   reflection_analysis: ReflectionAnalysis;
   trader_analysis: TraderAnalysis;
   timestamp: string;

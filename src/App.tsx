@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import type { TradeAnalysisResponse, TechnicalDataResponse, TickerResponse } from './types';
 import { api } from './services/api';
 import TechnicalAnalysisCard from './components/TechnicalAnalysisCard';
-import NewsAnalysisCard from './components/NewsAnalysisCard';
+import SentimentAnalysisCard from './components/SentimentAnalysisCard';
 import ReflectionAnalysisCard from './components/ReflectionAnalysisCard';
 import TraderAnalysisCard from './components/TraderAnalysisCard';
 import HistoricalPredictions from './components/HistoricalPredictions';
@@ -33,7 +33,7 @@ function App() {
   const [progressSteps, setProgressSteps] = useState<ProgressStep[]>([
     { id: 'refresh_data', label: 'Fetching Real-Time Market Data', status: 'pending' },
     { id: 'technical_agent', label: 'Technical Agent', status: 'pending' },
-    { id: 'news_agent', label: 'Sentiment Agent', status: 'pending' },
+    { id: 'sentiment_agent', label: 'Sentiment Agent', status: 'pending' },
     { id: 'reflection_agent', label: 'Reflection Agent', status: 'pending' },
     { id: 'trader_agent', label: 'Trader Agent', status: 'pending' },
     { id: 'complete', label: 'Finalising Results', status: 'pending' },
@@ -112,7 +112,7 @@ function App() {
     setProgressSteps([
       { id: 'refresh_data', label: 'Fetching Real-Time Market Data', status: 'pending' },
       { id: 'technical_agent', label: 'Technical Agent', status: 'pending' },
-      { id: 'news_agent', label: 'Sentiment Agent', status: 'pending' },
+      { id: 'sentiment_agent', label: 'Sentiment Agent', status: 'pending' },
       { id: 'reflection_agent', label: 'Reflection Agent', status: 'pending' },
       { id: 'trader_agent', label: 'Trader Agent', status: 'pending' },
       { id: 'complete', label: 'Finalising Results', status: 'pending' },
@@ -357,7 +357,7 @@ function App() {
             </div>
 
             <div className='mb-6 sm:mb-8'>
-              <NewsAnalysisCard
+              <SentimentAnalysisCard
                 analysis={analysis.news_analysis}
                 isExpanded={openCard === 'news'}
                 onToggle={() => handleCardToggle('news')}
