@@ -11,12 +11,12 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
     {
       name: "Technical Agent",
       weight: "40%",
-      role: "Analyses price action, indicators (RSI, MACD, EMA), support/resistance levels, and volume patterns to generate technical signals."
+      role: "Analyses price trends, momentum indicators, and volume patterns to identify high-probability trade setups with defined entry/exit levels."
     },
     {
       name: "Sentiment Agent",
       weight: "30%",
-      role: "Processes market news and sentiment from RSS feeds to identify potential catalysts and market-moving events."
+      role: "Combines real-time Fear & Greed Index with news sentiment analysis to identify market psychology, catalysts, and risk events."
     },
     {
       name: "Reflection Agent",
@@ -26,14 +26,14 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
     {
       name: "Trader Agent",
       weight: "Final",
-      role: "Synthesizes all agent inputs with confidence weighting to make final BUY/SELL/HOLD decision with risk management."
+      role: "Synthesises all agent inputs with confidence weighting to make final BUY/SELL/HOLD decision with risk management."
     }
   ];
 
   const techStack = [
-    { category: "Backend", items: ["Python 3.12", "FastAPI", "LangGraph", "Claude AI", "PostgreSQL"] },
-    { category: "Frontend", items: ["React 19", "TypeScript", "Tailwind CSS 4", "Vite"] },
-    { category: "APIs", items: ["Binance API", "RSS Feeds", "RESTful Architecture"] }
+    { category: "Backend", items: ["Python", "FastAPI", "LangGraph", "Claude AI", "PostgreSQL"] },
+    { category: "Frontend", items: ["React", "TypeScript", "Tailwind CSS"] },
+    { category: "APIs", items: ["Binance", "CFGI", "RSS Feeds", "RESTful Architecture"] }
   ];
 
   return (
