@@ -122,16 +122,6 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
           {/* LEFT COLUMN */}
           <div className="space-y-4 md:space-y-6">
 
-            {/* Summary */}
-            {analysis.summary && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Summary</h3>
-                <div className="glass-section p-4 rounded-xl">
-                  <p className="text-sm text-gray-800 leading-relaxed">{analysis.summary}</p>
-                </div>
-              </div>
-            )}
-
             {/* Technical Indicators Table */}
             <div className="space-y-1">
               <h3 className="text-sm font-semibold tracking-wide">Technical Indicators</h3>
@@ -205,25 +195,35 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
               </div>
             )}
 
-            {/* Market Condition */}
-            {analysis.market_condition && (
+            {/* Watch List */}
+            {analysis.watch_list && (
               <div className="space-y-1">
-                <div className="glass-section p-4 rounded-xl">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">Current market condition</span>
-                    <span className={`text-lg font-bold ${
-                      analysis.market_condition === 'TRENDING' ? 'text-blue-700' :
-                      analysis.market_condition === 'RANGING' ? 'text-gray-700' :
-                      analysis.market_condition === 'VOLATILE' ? 'text-red-700' :
-                      'text-gray-600'
-                    }`}>
-                      {analysis.market_condition}
-                    </span>
-                  </div>
+                <h3 className="text-sm font-semibold tracking-wide">Watch List</h3>
+                <div className="glass-section p-4 rounded-xl space-y-3">
+                  {analysis.watch_list.next_24h && analysis.watch_list.next_24h.length > 0 && (
+                    <div>
+                      <div className="text-xs font-semibold text-gray-900 mb-1.5">Next 24 Hours</div>
+                      <div className="space-y-0.5">
+                        {analysis.watch_list.next_24h.map((item, idx) => (
+                          <div key={idx} className="text-xs text-gray-700">• {item}</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {analysis.watch_list.next_48h && analysis.watch_list.next_48h.length > 0 && (
+                    <div className="pt-3 border-t border-gray-200">
+                      <div className="text-xs font-semibold text-gray-900 mb-1.5">Next 48 Hours</div>
+                      <div className="space-y-0.5">
+                        {analysis.watch_list.next_48h.map((item, idx) => (
+                          <div key={idx} className="text-xs text-gray-700">• {item}</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
-
 
           </div>
 
@@ -297,35 +297,6 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
               </div>
             )}
 
-            {/* Watch List */}
-            {analysis.watch_list && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Watch List</h3>
-                <div className="glass-section p-4 rounded-xl space-y-3">
-                  {analysis.watch_list.next_24h && analysis.watch_list.next_24h.length > 0 && (
-                    <div>
-                      <div className="text-xs font-semibold text-gray-900 mb-1.5">Next 24 Hours</div>
-                      <div className="space-y-0.5">
-                        {analysis.watch_list.next_24h.map((item, idx) => (
-                          <div key={idx} className="text-xs text-gray-700">• {item}</div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {analysis.watch_list.next_48h && analysis.watch_list.next_48h.length > 0 && (
-                    <div className="pt-3 border-t border-gray-200">
-                      <div className="text-xs font-semibold text-gray-900 mb-1.5">Next 48 Hours</div>
-                      <div className="space-y-0.5">
-                        {analysis.watch_list.next_48h.map((item, idx) => (
-                          <div key={idx} className="text-xs text-gray-700">• {item}</div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
 
             {/* Invalidation Triggers */}
             {analysis.invalidation && analysis.invalidation.length > 0 && (
@@ -355,21 +326,44 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
               </div>
             )}
 
-            {/* Agent Confidence */}
-            <div className="space-y-1">
-              <div className="glass-section p-4 rounded-xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">Analyst's Confidence </span>
-                  <span className="text-2xl font-bold text-gray-900">{(analysis.confidence * 100).toFixed(0)}%</span>
-                </div>
-                {(analysis.trade_setup?.timeframe || analysis.timeframe) && (
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                    <span className="text-xs text-gray-600">Timeframe</span>
-                    <span className="text-xs text-gray-900 font-medium">{analysis.trade_setup?.timeframe || analysis.timeframe}</span>
+            {/* Analyst verdict */}
+            {analysis.market_condition && (
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold text-gray-900">Analyst verdict </h3>
+                <div className="glass-section p-5 rounded-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <div className="text-xs text-gray-600 mb-1">Market Condition</div>
+                      <div className={`text-sm font-bold ${
+                        analysis.market_condition === 'TRENDING' ? 'text-blue-700' :
+                        analysis.market_condition === 'RANGING' ? 'text-gray-700' :
+                        analysis.market_condition === 'VOLATILE' ? 'text-red-700' :
+                        'text-gray-600'
+                      }`}>
+                        {analysis.market_condition}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 pt-4">
+                      <div className='text-sm text-gray-500'>Confidence:</div>
+                      <div className="text-sm font-bold">
+                        {(analysis.confidence * 100).toFixed(0)}%
+                      </div>
+                    </div>
                   </div>
-                )}
+
+                  {/* Timeframe */}
+                  {(analysis.trade_setup?.timeframe || analysis.timeframe) && (
+                    <div className="pt-4 border-t border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">Suggested Timeframe</span>
+                        <span className="text-sm font-bold text-gray-900">{analysis.trade_setup?.timeframe || analysis.timeframe}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+
 
             {/* Confidence Reasoning */}
             {analysis.confidence_reasoning && (
@@ -402,6 +396,16 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
                     <div className="text-xs font-semibold text-gray-900 mb-1.5">Overall Assessment</div>
                     <p className="text-xs text-gray-700 leading-relaxed">{analysis.confidence_reasoning.assessment}</p>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Summary */}
+            {analysis.summary && (
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold tracking-wide">Summary</h3>
+                <div className="glass-section p-4 rounded-xl">
+                  <p className="text-sm text-gray-800 leading-relaxed">{analysis.summary}</p>
                 </div>
               </div>
             )}

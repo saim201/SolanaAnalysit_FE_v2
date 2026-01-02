@@ -273,7 +273,7 @@ function App() {
               <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
                 TradingMate
               </h1>
-              <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1 font-medium">A smart muiti-agent trading analyst</p>
+              <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1 font-medium">An autonomous and smart multi-analyst system</p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button
