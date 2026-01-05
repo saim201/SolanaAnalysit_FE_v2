@@ -108,7 +108,7 @@ export default function Dashboard({ analysis, marketData, tickerData }: TradingD
       {/* Trading Signal Summary */}
       <div className="glass-card rounded-xl p-3 sm:p-4 md:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 mb-3 md:mb-4 border-b border-gray-200 gap-2">
-          <h3 className="text-sm sm:text-base font-bold text-gray-900">Trading Signal</h3>
+          <h3 className="text-sm sm:text-base font-bold text-gray-900">Technical analyst findings</h3>
           <div className="flex items-center gap-3">
             {/* <span className="text-xs sm:text-sm text-gray-600">Confidence: {(trader_analysis.confidence * 100).toFixed(0)}%</span> */}
           </div>
