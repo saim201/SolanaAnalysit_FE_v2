@@ -82,30 +82,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
     { name: 'Resistance', value: technicalData?.resistance1 },
   ];
 
-  const currentPrice = technicalData?.currentPrice || 0;
-
-  const renderThinking = () => {
-    if (!analysis.thinking) return null;
-
-    if (Array.isArray(analysis.thinking)) {
-      return (
-        <div className="space-y-2">
-          {analysis.thinking.map((step, idx) => (
-            <div key={idx} className="pb-2 mb-2 border-b border-gray-200 last:border-0 last:pb-0 last:mb-0">
-              <div className="text-xs font-semibold text-gray-700 mb-1">Step {idx + 1}</div>
-              <p className="text-xs text-gray-700 leading-relaxed">{step}</p>
-            </div>
-          ))}
-        </div>
-      );
-    }
-
-    return (
-      <pre className="text-xs text-gray-700 whitespace-pre-wrap leading-relaxed">
-        {analysis.thinking}
-      </pre>
-    );
-  };
+  const currentPrice = technicalData?.currentPrice || analysis.trade_setup.current_price || 0;
 
   return (
     <CollapsibleCard
@@ -116,24 +93,73 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+      <div className="space-y-3">
+
+        {/* Market Overview Strip */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Recommendation</div>
+            <div className={`text-sm font-bold ${
+              analysis.recommendation === 'BUY' ? 'text-green-600' :
+              analysis.recommendation === 'SELL' ? 'text-red-600' :
+              analysis.recommendation === 'WAIT' ? 'text-amber-600' :
+              'text-gray-600'
+            }`}>{analysis.recommendation}</div>
+          </div>
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Market State</div>
+            <div className="text-xs font-semibold text-gray-800">{analysis.market_condition}</div>
+          </div>
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Analyst Confidence</div>
+            <div className="text-sm font-bold">{(analysis.confidence.analysis_confidence * 100).toFixed(0)}%</div>
+          </div>
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Setup Quality</div>
+            <div className="text-sm font-bold">{(analysis.confidence.setup_quality * 100).toFixed(0)}%</div>
+          </div>
+        </div>
+
+        {/* Action Plan - Compact Grid */}
+        {/* <div className="glass-section p-2.5 rounded-lg">
+          <h3 className="text-xs font-semibold tracking-wide text-gray-800 mb-2">What To Do</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="bg-green-50/50 p-2 rounded border-l-2 border-green-500">
+              <div className="text-[10px] font-semibold text-green-700 mb-0.5">For Buyers</div>
+              <p className="text-[11px] text-gray-700 leading-snug">{analysis.action_plan.for_buyers}</p>
+            </div>
+            <div className="bg-red-50/50 p-2 rounded border-l-2 border-red-500">
+              <div className="text-[10px] font-semibold text-red-700 mb-0.5">For Sellers</div>
+              <p className="text-[11px] text-gray-700 leading-snug">{analysis.action_plan.for_sellers}</p>
+            </div>
+            <div className="bg-blue-50/50 p-2 rounded border-l-2 border-blue-500">
+              <div className="text-[10px] font-semibold text-blue-700 mb-0.5">If Holding</div>
+              <p className="text-[11px] text-gray-700 leading-snug">{analysis.action_plan.if_holding}</p>
+            </div>
+            <div className="bg-amber-50/50 p-2 rounded border-l-2 border-amber-500">
+              <div className="text-[10px] font-semibold text-amber-700 mb-0.5">Avoid</div>
+              <p className="text-[11px] text-gray-700 leading-snug">{analysis.action_plan.avoid}</p>
+            </div>
+          </div>
+        </div> */}
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
 
           {/* LEFT COLUMN */}
-          <div className="space-y-4 md:space-y-6">
+          <div className="space-y-3">
 
             {/* Technical Indicators Table */}
             <div className="space-y-1">
-              <h3 className="text-sm font-semibold tracking-wide">Technical Indicators</h3>
-              <div className="glass-section rounded-xl overflow-hidden">
-                <div className="max-h-64 overflow-y-auto">
-                  <table className="w-full text-xs">
+              <h3 className="text-sm font-semibold tracking-wide text-gray-800">Technical Indicators</h3>
+              <div className="glass-section rounded-lg overflow-hidden">
+                <div className="max-h-60 overflow-y-auto">
+                  <table className="w-full text-[11px]">
                     <thead className="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-gray-300/50">
                       <tr>
-                        <th className="text-left py-2.5 px-3 text-gray-700 font-semibold">#</th>
-                        <th className="text-left py-2.5 px-3 text-gray-700 font-semibold">Indicator</th>
-                        <th className="text-right py-2.5 px-3 text-gray-700 font-semibold">Value</th>
-                        <th className="text-right py-2.5 px-3 text-gray-700 font-semibold">Signal</th>
+                        <th className="text-left py-1.5 px-2 text-gray-700 font-semibold">#</th>
+                        <th className="text-left py-1.5 px-2 text-gray-700 font-semibold">Indicator</th>
+                        <th className="text-right py-1.5 px-2 text-gray-700 font-semibold">Value</th>
+                        <th className="text-right py-1.5 px-2 text-gray-700 font-semibold">Signal</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -141,14 +167,14 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
                         const signal = getIndicatorSignal(indicator.name, indicator.value, currentPrice);
                         return (
                           <tr key={indicator.name} className="border-b border-gray-200/40 last:border-0 hover:bg-gray-50 transition-colors duration-150">
-                            <td className="py-2.5 px-3 text-gray-600">{index + 1}</td>
-                            <td className="py-2.5 px-3 text-gray-800 font-medium">{indicator.name}</td>
-                            <td className="py-2.5 px-3 text-right text-gray-900 font-medium">
+                            <td className="py-1.5 px-2 text-gray-600">{index + 1}</td>
+                            <td className="py-1.5 px-2 text-gray-800 font-medium">{indicator.name}</td>
+                            <td className="py-1.5 px-2 text-right text-gray-900 font-medium">
                               {indicator.value !== undefined && indicator.value !== null
                                 ? indicator.value.toFixed(2)
                                 : '─'}
                             </td>
-                            <td className={`py-2.5 px-3 text-right font-medium ${signal.color}`}>
+                            <td className={`py-1.5 px-2 text-right font-medium ${signal.color}`}>
                               {signal.text}
                             </td>
                           </tr>
@@ -161,163 +187,162 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
             </div>
 
             {/* Analysis Breakdown */}
-            {analysis.analysis && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Analysis Breakdown</h3>
-                <div className="glass-section p-4 rounded-xl space-y-3">
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold tracking-wide text-gray-800">Analysis Breakdown</h3>
+              <div className="glass-section p-2.5 rounded-lg space-y-2">
+                <div>
+                  <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
+                    <span>Trend</span>
+                    <span className="text-[10px] font-normal text-gray-500">
+                      {analysis.analysis.trend.direction} • {analysis.analysis.trend.strength}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.trend.detail}</p>
+                </div>
+
+                <div className="pt-2 border-t border-gray-200">
+                  <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
+                    <span>Momentum</span>
+                    <span className="text-[10px] font-normal text-gray-500">
+                      {analysis.analysis.momentum.direction} • {analysis.analysis.momentum.strength}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.momentum.detail}</p>
+                </div>
+
+                <div className="pt-2 border-t border-gray-200">
+                  <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
+                    <span>Volume</span>
+                    <span className="text-[10px] font-normal text-gray-500">
+                      {analysis.analysis.volume.quality} • {analysis.analysis.volume.ratio.toFixed(2)}x
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.volume.detail}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Trade Setup */}
+            {/* <div className="space-y-1">
+              <h3 className="text-xs font-semibold tracking-wide text-gray-800">Trade Setup</h3>
+              <div className="glass-section p-2.5 rounded-lg space-y-1.5">
+                <div className="pb-1.5 border-b border-gray-200">
+                  <div className="text-[10px] text-gray-500 mb-0.5">Viability</div>
+                  <p className={`text-[11px] font-semibold ${
+                    analysis.trade_setup.viability === 'VALID' ? 'text-green-700' :
+                    analysis.trade_setup.viability === 'INVALID' ? 'text-red-700' :
+                    'text-amber-700'
+                  }`}>{analysis.trade_setup.viability}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
                   <div>
-                    <div className="text-xs font-semibold text-gray-900 mb-1.5">Trend</div>
-                    <div className="text-xs text-gray-700 space-y-1">
-                      <div><span className="text-gray-600">Direction:</span> {analysis.analysis.trend.direction}</div>
-                      <div><span className="text-gray-600">Strength:</span> {analysis.analysis.trend.strength}</div>
-                      <div className="mt-1.5 text-gray-700 leading-relaxed">{analysis.analysis.trend.detail}</div>
-                    </div>
+                    <span className="text-gray-500">Current</span>
+                    <div className="font-semibold text-gray-900">${analysis.trade_setup.current_price.toFixed(2)}</div>
                   </div>
-
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="text-xs font-semibold text-gray-900 mb-1.5">Momentum</div>
-                    <div className="text-xs text-gray-700 space-y-1">
-                      <div><span className="text-gray-600">Direction:</span> {analysis.analysis.momentum.direction}</div>
-                      <div><span className="text-gray-600">Strength:</span> {analysis.analysis.momentum.strength}</div>
-                      <div className="mt-1.5 text-gray-700 leading-relaxed">{analysis.analysis.momentum.detail}</div>
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="text-xs font-semibold text-gray-900 mb-1.5">Volume</div>
-                    <div className="text-xs text-gray-700 space-y-1">
-                      <div><span className="text-gray-600">Quality:</span> {analysis.analysis.volume.quality}</div>
-                      <div><span className="text-gray-600">Ratio:</span> {analysis.analysis.volume.ratio.toFixed(2)}x</div>
-                      <div className="mt-1.5 text-gray-700 leading-relaxed">{analysis.analysis.volume.detail}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Watch List */}
-            {analysis.watch_list && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Watch List</h3>
-                <div className="glass-section p-4 rounded-xl space-y-3">
-                  {analysis.watch_list.next_24h && analysis.watch_list.next_24h.length > 0 && (
+                  {analysis.trade_setup.entry && (
                     <div>
-                      <div className="text-xs font-semibold text-gray-900 mb-1.5">Next 24 Hours</div>
-                      <div className="space-y-0.5">
-                        {analysis.watch_list.next_24h.map((item, idx) => (
-                          <div key={idx} className="text-xs text-gray-700">• {item}</div>
-                        ))}
-                      </div>
+                      <span className="text-gray-500">Entry</span>
+                      <div className="font-semibold text-green-700">${analysis.trade_setup.entry.toFixed(2)}</div>
                     </div>
                   )}
-
-                  {analysis.watch_list.next_48h && analysis.watch_list.next_48h.length > 0 && (
-                    <div className="pt-3 border-t border-gray-200">
-                      <div className="text-xs font-semibold text-gray-900 mb-1.5">Next 48 Hours</div>
-                      <div className="space-y-0.5">
-                        {analysis.watch_list.next_48h.map((item, idx) => (
-                          <div key={idx} className="text-xs text-gray-700">• {item}</div>
-                        ))}
-                      </div>
+                  <div>
+                    <span className="text-gray-500">Support</span>
+                    <div className="font-semibold text-blue-700">${analysis.trade_setup.support.toFixed(2)}</div>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Resistance</span>
+                    <div className="font-semibold text-red-700">${analysis.trade_setup.resistance.toFixed(2)}</div>
+                  </div>
+                  {analysis.trade_setup.stop_loss && (
+                    <div>
+                      <span className="text-gray-500">Stop Loss</span>
+                      <div className="font-semibold text-red-700">${analysis.trade_setup.stop_loss.toFixed(2)}</div>
+                    </div>
+                  )}
+                  {analysis.trade_setup.take_profit && (
+                    <div>
+                      <span className="text-gray-500">Take Profit</span>
+                      <div className="font-semibold text-green-700">${analysis.trade_setup.take_profit.toFixed(2)}</div>
                     </div>
                   )}
                 </div>
+
+                <div className="pt-1.5 border-t border-gray-200 flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500">Risk/Reward</span>
+                  <span className={`text-xs font-bold ${
+                    analysis.trade_setup.risk_reward >= 1.5 ? 'text-green-600' :
+                    analysis.trade_setup.risk_reward >= 1.0 ? 'text-amber-600' :
+                    'text-red-600'
+                  }`}>{analysis.trade_setup.risk_reward.toFixed(2)}:1</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500">Timeframe</span>
+                  <span className="text-[11px] font-semibold text-gray-900">{analysis.trade_setup.timeframe}</span>
+                </div>
               </div>
-            )}
+            </div> */}
 
           </div>
 
           {/* RIGHT COLUMN */}
-          <div className="space-y-4 md:space-y-6">
+          <div className="space-y-3">
 
-            {/* Trade Setup */}
-            {/* {analysis.trade_setup && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Trade Setup</h3>
-                <div className="glass-section p-4 rounded-xl space-y-2">
-                  <div className="pb-2 border-b border-gray-200">
-                    <div className="text-xs text-gray-600 mb-1">Viability</div>
-                    <p className="text-xs text-gray-700 leading-relaxed">{analysis.trade_setup.viability}</p>
-                  </div>
-
-                  {analysis.trade_setup.entry && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-700">Entry Price</span>
-                      <span className="text-sm font-bold text-green-700">${analysis.trade_setup.entry.toFixed(2)}</span>
-                    </div>
-                  )}
-                  {analysis.trade_setup.stop_loss && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-700">Stop Loss</span>
-                      <span className="text-sm font-bold text-red-700">${analysis.trade_setup.stop_loss.toFixed(2)}</span>
-                    </div>
-                  )}
-                  {analysis.trade_setup.take_profit && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-700">Take Profit</span>
-                      <span className="text-sm font-bold text-blue-700">${analysis.trade_setup.take_profit.toFixed(2)}</span>
-                    </div>
-                  )}
-
-                  {analysis.trade_setup.risk_reward && (
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                      <span className="text-xs text-gray-600">Risk/Reward</span>
-                      <span className="text-xs text-gray-900 font-bold">{analysis.trade_setup.risk_reward}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )} */}
-
-            {/* Action Plan */}
-            {analysis.action_plan && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Action Plan</h3>
-                <div className="glass-section p-4 rounded-xl space-y-3">
+            {/* Look for */}
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold tracking-wide text-gray-800">Look for</h3>
+              <div className="glass-section p-2.5 rounded-lg space-y-2">
+                {analysis.watch_list.bullish_signals.length > 0 && (
                   <div>
-                    <div className="text-xs font-semibold text-green-700 mb-1">Primary</div>
-                    <p className="text-xs text-gray-700 leading-relaxed">{analysis.action_plan.primary}</p>
+                    <div className="text-[11px] font-semibold text-green-700 mb-1">Bullish Signals</div>
+                    <div className="space-y-0.5">
+                      {analysis.watch_list.bullish_signals.map((signal, idx) => (
+                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                          <span className="text-green-500 mt-0.5">•</span>
+                          <span className="flex-1">{signal}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                )}
 
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="text-xs font-semibold text-blue-700 mb-1">Alternative</div>
-                    <p className="text-xs text-gray-700 leading-relaxed">{analysis.action_plan.alternative}</p>
+                {analysis.watch_list.bearish_signals.length > 0 && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="text-[11px] font-semibold text-red-700 mb-1">Bearish Signals</div>
+                    <div className="space-y-0.5">
+                      {analysis.watch_list.bearish_signals.map((signal, idx) => (
+                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                          <span className="text-red-500 mt-0.5">•</span>
+                          <span className="flex-1">{signal}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="text-xs font-semibold text-amber-700 mb-1">If In Position</div>
-                    <p className="text-xs text-gray-700 leading-relaxed">{analysis.action_plan.if_in_position}</p>
-                  </div>
-
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="text-xs font-semibold text-red-700 mb-1">Avoid</div>
-                    <p className="text-xs text-gray-700 leading-relaxed">{analysis.action_plan.avoid}</p>
-                  </div>
-                </div>
+                )}
               </div>
-            )}
-
+            </div>
 
             {/* Invalidation Triggers */}
-            {analysis.invalidation && analysis.invalidation.length > 0 && (
+            {analysis.invalidation.length > 0 && (
               <div className="space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <h3 className="text-sm font-semibold tracking-wide">Invalidation Triggers</h3>
+                <div className="flex items-center gap-1">
+                  <h3 className="text-sm font-semibold tracking-wide text-gray-800">Invalidation Triggers</h3>
                   <div className="group relative">
-                    <svg className="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-56 p-3 bg-gray-700 text-white text-xs rounded-lg shadow-lg">
-                      <div className="absolute -top-1 left-2 w-2 h-2 bg-gray-700 rotate-45"></div>
-                      Conditions that prove this analysis is wrong. Exit immediately if any trigger occurs.
+                    <div className="invisible group-hover:visible absolute left-0 top-4 z-10 w-48 p-2 bg-gray-700 text-white text-[10px] rounded-lg shadow-lg">
+                      <div className="absolute -top-1 left-1 w-2 h-2 bg-gray-700 rotate-45"></div>
+                      Exit immediately if any trigger occurs
                     </div>
                   </div>
                 </div>
-                <div className="glass-section p-4 rounded-xl">
-                  <div className="space-y-1">
+                <div className="glass-section p-2.5 rounded-lg bg-red-50/50">
+                  <div className="space-y-0.5">
                     {analysis.invalidation.map((trigger, idx) => (
-                      <div key={idx} className="text-xs text-gray-700 flex items-start gap-1">
-                        <span className="text-red-500">•</span>
+                      <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                        <span className="text-red-500 mt-0.5">•</span>
                         <span className="flex-1">{trigger}</span>
                       </div>
                     ))}
@@ -326,98 +351,32 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
               </div>
             )}
 
-            {/* Analyst verdict */}
-            {analysis.market_condition && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold text-gray-900">Analyst verdict </h3>
-                <div className="glass-section p-5 rounded-xl">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <div className="text-xs text-gray-600 mb-1">Market Condition</div>
-                      <div className={`text-sm font-bold ${
-                        analysis.market_condition === 'TRENDING' ? 'text-blue-700' :
-                        analysis.market_condition === 'RANGING' ? 'text-gray-700' :
-                        analysis.market_condition === 'VOLATILE' ? 'text-red-700' :
-                        'text-gray-600'
-                      }`}>
-                        {analysis.market_condition}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 pt-4">
-                      <div className='text-sm text-gray-500'>Confidence:</div>
-                      <div className="text-sm font-bold">
-                        {(analysis.confidence * 100).toFixed(0)}%
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Timeframe */}
-                  {(analysis.trade_setup?.timeframe || analysis.timeframe) && (
-                    <div className="pt-4 border-t border-gray-200">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-500">Suggested Timeframe</span>
-                        <span className="text-sm font-bold text-gray-900">{analysis.trade_setup?.timeframe || analysis.timeframe}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-
             {/* Confidence Reasoning */}
-            {analysis.confidence_reasoning && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Confidence Breakdown</h3>
-                <div className="glass-section p-4 rounded-xl space-y-3">
-                  {analysis.confidence_reasoning.supporting.length > 0 && (
-                    <div>
-                      <div className="text-xs font-semibold text-green-700 mb-1.5">Supporting Factors</div>
-                      <div className="space-y-0.5">
-                        {analysis.confidence_reasoning.supporting.map((factor, idx) => (
-                          <div key={idx} className="text-xs text-gray-700">• {factor}</div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold tracking-wide text-gray-800">Confidence Reasoning</h3>
+              <div className="glass-section p-2.5 rounded-lg space-y-2">
+                <div>
+                  <div className="text-[11px] font-semibold text-green-700 mb-0.5">Supporting</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.confidence_reasoning.supporting}</p>
+                </div>
 
-                  {analysis.confidence_reasoning.concerns.length > 0 && (
-                    <div className="pt-3 border-t border-gray-200">
-                      <div className="text-xs font-semibold text-amber-700 mb-1.5">Concerns</div>
-                      <div className="space-y-0.5">
-                        {analysis.confidence_reasoning.concerns.map((concern, idx) => (
-                          <div key={idx} className="text-xs text-gray-700">• {concern}</div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="text-xs font-semibold text-gray-900 mb-1.5">Overall Assessment</div>
-                    <p className="text-xs text-gray-700 leading-relaxed">{analysis.confidence_reasoning.assessment}</p>
-                  </div>
+                <div className="pt-2 border-t border-gray-200">
+                  <div className="text-[11px] font-semibold text-amber-700 mb-0.5">Concerns</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.confidence_reasoning.concerns}</p>
                 </div>
               </div>
-            )}
-
-            {/* Summary */}
-            {analysis.summary && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold tracking-wide">Summary</h3>
-                <div className="glass-section p-4 rounded-xl">
-                  <p className="text-sm text-gray-800 leading-relaxed">{analysis.summary}</p>
-                </div>
-              </div>
-            )}
+            </div>
 
           </div>
         </div>
 
         {/* Chain-of-Thought */}
         {analysis.thinking && (
-          <CollapsibleSection title="Chain-of-Thought Process">
-            <div className="glass-section p-4 rounded-xl">
-              {renderThinking()}
+          <CollapsibleSection title="Chain-of-thought reasoning">
+            <div className="glass-section p-2.5 rounded-lg">
+              <pre className="text-[11px] text-gray-700 whitespace-pre-wrap leading-relaxed font-mono">
+                {analysis.thinking}
+              </pre>
             </div>
           </CollapsibleSection>
         )}

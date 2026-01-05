@@ -447,7 +447,7 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
 
         {/* Detailed Analysis (Collapsible) */}
         {analysis.thinking && (
-          <CollapsibleSection title="Chain-of-Thought Process">
+          <CollapsibleSection title="Chain-of-thought reasoning">
             <div className="glass-section p-4 rounded-xl">
               <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">
                 {analysis.thinking}

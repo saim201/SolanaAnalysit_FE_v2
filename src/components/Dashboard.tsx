@@ -110,7 +110,7 @@ export default function Dashboard({ analysis, marketData, tickerData }: TradingD
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 mb-3 md:mb-4 border-b border-gray-200 gap-2">
           <h3 className="text-sm sm:text-base font-bold text-gray-900">Trading Signal</h3>
           <div className="flex items-center gap-3">
-            <span className="text-xs sm:text-sm text-gray-600">Confidence: {(trader_analysis.confidence * 100).toFixed(0)}%</span>
+            {/* <span className="text-xs sm:text-sm text-gray-600">Confidence: {(trader_analysis.confidence * 100).toFixed(0)}%</span> */}
           </div>
         </div>
 
@@ -147,30 +147,24 @@ export default function Dashboard({ analysis, marketData, tickerData }: TradingD
           </>
         ) : (
           <>
-            <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">Analysis Summary</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
-              {trader_analysis.agent_synthesis?.agreement_summary && (
-                <div className="glass-card rounded-lg p-3">
-                  <div className="text-xs text-gray-700 leading-relaxed">
-                    {trader_analysis.agent_synthesis.agreement_summary}
-                  </div>
-                </div>
-              )}
-              {trader_analysis.execution_plan?.entry_timing && (
-                <div className="glass-card rounded-lg p-3">
-                  <div className="text-xs text-gray-500 mb-2 font-medium">Entry Timing</div>
-                  <div className="text-xs text-gray-700 leading-relaxed">
-                    {trader_analysis.execution_plan.entry_timing}
-                  </div>
-                </div>
-              )}
-              {!trader_analysis.agent_synthesis?.agreement_summary && !trader_analysis.execution_plan?.entry_timing && (
-                <div className="glass-card rounded-lg p-3 col-span-2">
-                  <div className="text-sm text-gray-500 text-center py-4">
-                    No trade setup available - HOLD position
-                  </div>
-                </div>
-              )}
+            {/* <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">What To Do</h4> */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="bg-green-50/80 p-2.5 rounded border-l-2 border-green-500">
+                <div className="text-[10px] font-semibold text-green-700 mb-1">For Buyers</div>
+                <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.for_buyers}</p>
+              </div>
+              <div className="bg-red-50/80 p-2.5 rounded border-l-2 border-red-500">
+                <div className="text-[10px] font-semibold text-red-700 mb-1">For Sellers</div>
+                <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.for_sellers}</p>
+              </div>
+              <div className="bg-blue-50/80 p-2.5 rounded border-l-2 border-blue-500">
+                <div className="text-[10px] font-semibold text-blue-700 mb-1">If Holding</div>
+                <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.if_holding}</p>
+              </div>
+              <div className="bg-amber-50/80 p-2.5 rounded border-l-2 border-amber-500">
+                <div className="text-[10px] font-semibold text-amber-700 mb-1">Avoid</div>
+                <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.avoid}</p>
+              </div>
             </div>
           </>
         )}
@@ -184,7 +178,7 @@ export default function Dashboard({ analysis, marketData, tickerData }: TradingD
             <div className="flex-1">
               <div className="text-xs font-bold text-gray-900 mb-1">Key Insight</div>
               <div className="text-xs text-gray-700">
-                {trader_analysis.reasoning || technical_analysis.key_signals?.[0] || 'Analyzing market conditions...'}
+                {trader_analysis.reasoning || technical_analysis.confidence.interpretation || 'Analysing market conditions...'}
               </div>
             </div>
           </div>

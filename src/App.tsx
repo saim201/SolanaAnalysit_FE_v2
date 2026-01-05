@@ -342,7 +342,7 @@ function App() {
             <div className="mb-4 sm:mb-6">
               <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-1.5 sm:mb-2">Detailed Analysis</h2>
               <p className="text-xs sm:text-sm text-gray-600">
-                Expand each card to view full reasoning, complete data breakdown, and chain-of-thought process of each specialised analyst
+                Expand each card to view full reasoning, complete data breakdown, and chain-of-thought reasoning of each specialised analyst.
               </p>
             </div>
 

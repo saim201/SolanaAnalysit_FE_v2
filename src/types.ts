@@ -3,13 +3,16 @@
 export interface TechnicalAnalysis {
   timestamp?: string;
   recommendation: "BUY" | "SELL" | "HOLD" | "WAIT";
-  confidence: number;
-  market_condition?: "TRENDING" | "RANGING" | "VOLATILE" | "QUIET";
+  confidence: {
+    analysis_confidence: number;
+    setup_quality: number;
+    interpretation: string;
+  };
+  market_condition: "TRENDING" | "RANGING" | "VOLATILE" | "QUIET";
+  summary: string;
+  thinking?: string;
 
-  // New v2 fields
-  summary?: string;
-  thinking?: Array<string> | string;  // Array in v2, string in old format
-  analysis?: {
+  analysis: {
     trend: {
       direction: string;
       strength: string;
@@ -26,54 +29,37 @@ export interface TechnicalAnalysis {
       detail: string;
     };
   };
-  trade_setup?: {
+
+  trade_setup: {
     viability: string;
     entry: number | null;
     stop_loss: number | null;
     take_profit: number | null;
-    risk_reward: string;
+    risk_reward: number;
+    support: number;
+    resistance: number;
+    current_price: number;
     timeframe: string;
   };
-  action_plan?: {
-    primary: string;
-    alternative: string;
-    if_in_position: string;
+
+  action_plan: {
+    for_buyers: string;
+    for_sellers: string;
+    if_holding: string;
     avoid: string;
   };
-  watch_list?: {
-    next_24h: string[];
-    next_48h: string[];
-  };
-  invalidation?: string[];
-  confidence_reasoning?: {
-    supporting: string[];
-    concerns: string[];
-    assessment: string;
+
+  watch_list: {
+    bullish_signals: string[];
+    bearish_signals: string[];
   };
 
-  // Legacy fields (for backward compatibility)
-  confidence_breakdown?: {
-    trend_strength?: { score: number; reasoning: string; };
-    momentum_quality?: { score: number; reasoning: string; };
-    volume_conviction?: { score: number; reasoning: string; };
-    risk_reward_setup?: { score: number; reasoning: string; };
-    final_adjusted?: { score: number; reasoning: string; };
+  invalidation: string[];
+
+  confidence_reasoning: {
+    supporting: string;
+    concerns: string;
   };
-  timeframe?: string | null;
-  key_signals?: string[];
-  entry_level?: number | null;
-  stop_loss?: number | null;
-  take_profit?: number | null;
-  recommendation_summary?: string;
-  indicators_analysis?: {
-    primary_indicators_used: string[];
-    selection_reasoning: string;
-  };
-  btc_correlation_impact?: {
-    level: string;
-    reasoning: string;
-  };
-  reasoning?: string;
 }
 
 
@@ -122,32 +108,26 @@ export type NewsAnalysis = SentimentAnalysis;
 
 export interface ReflectionAnalysis {
   timestamp?: string;
-  recommendation: "BUY" | "SELL" | "HOLD";
-  confidence: number;
+  recommendation: "BUY" | "SELL" | "HOLD" | "WAIT";
+  confidence: {
+    analysis_confidence: number;
+    final_confidence: number;
+    interpretation: string;
+  };
   agreement_analysis: {
-    alignment_status: string;
-    alignment_score: number;
-    explanation: string;
+    synthesis: string;
   };
   blind_spots: {
     technical_missed: string[];
-    news_missed: string[];
+    sentiment_missed: string[];
+    critical_insight: string;
   };
   risk_assessment: {
     primary_risk: string;
-    risk_level: string;
-    risk_score: number;
   };
   monitoring: {
     watch_next_24h: string[];
-    invalidation_trigger: string;
-  };
-  confidence_calculation: {
-    starting_confidence: number;
-    alignment_bonus: number;
-    risk_penalty: number;
-    confidence: number;
-    reasoning: string;
+    invalidation_triggers: string[];
   };
   reasoning: string;
   thinking?: string;
