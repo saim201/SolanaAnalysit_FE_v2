@@ -149,19 +149,19 @@ export default function Dashboard({ analysis, marketData, tickerData }: TradingD
           <>
             {/* <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">What To Do</h4> */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div className="bg-green-50/80 p-2.5 rounded border-l-2 border-green-500">
+              <div className="p-2.5 rounded border-l-2 border-green-500">
                 <div className="text-[10px] font-semibold text-green-700 mb-1">For Buyers</div>
                 <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.for_buyers}</p>
               </div>
-              <div className="bg-red-50/80 p-2.5 rounded border-l-2 border-red-500">
+              <div className="p-2.5 rounded border-l-2 border-red-500">
                 <div className="text-[10px] font-semibold text-red-700 mb-1">For Sellers</div>
                 <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.for_sellers}</p>
               </div>
-              <div className="bg-blue-50/80 p-2.5 rounded border-l-2 border-blue-500">
+              <div className="p-2.5 rounded border-l-2 border-blue-500">
                 <div className="text-[10px] font-semibold text-blue-700 mb-1">If Holding</div>
                 <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.if_holding}</p>
               </div>
-              <div className="bg-amber-50/80 p-2.5 rounded border-l-2 border-amber-500">
+              <div className="p-2.5 rounded border-l-2 border-amber-500">
                 <div className="text-[10px] font-semibold text-amber-700 mb-1">Avoid</div>
                 <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.avoid}</p>
               </div>
