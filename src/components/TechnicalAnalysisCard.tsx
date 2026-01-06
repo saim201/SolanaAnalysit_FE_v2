@@ -68,6 +68,94 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
     }
   };
 
+  const getIndicatorTooltip = (name: string): { title: string; description: string; calculation: string } => {
+    switch (name) {
+      case 'EMA20':
+        return {
+          title: 'EMA 20 (Exponential Moving Average)',
+          description: 'Tracks short-term price trends by giving more weight to recent prices. Used to identify immediate support/resistance.',
+          calculation: 'Calculation: 20-period exponential weighted moving average'
+        };
+
+      case 'EMA50':
+        return {
+          title: 'EMA 50 (Exponential Moving Average)',
+          description: 'Tracks medium-term price trends. Price above EMA50 indicates bullish momentum, below indicates bearish.',
+          calculation: 'Calculation: 50-period exponential weighted moving average'
+        };
+
+      case 'RSI':
+        return {
+          title: 'RSI (Relative Strength Index)',
+          description: 'Momentum oscillator measuring speed and magnitude of price changes. Values above 70 indicate overbought, below 30 indicate oversold.',
+          calculation: 'Calculation: 14-period gains/losses ratio (0-100 scale)'
+        };
+
+      case 'MACD Line':
+        return {
+          title: 'MACD Line',
+          description: 'Trend-following momentum indicator showing the relationship between two moving averages. When above signal line, bullish; below, bearish.',
+          calculation: 'Calculation: 12-period EMA minus 26-period EMA'
+        };
+
+      case 'MACD Signal':
+        return {
+          title: 'MACD Signal Line',
+          description: 'The signal line for MACD crossovers. When MACD line crosses above, it generates a buy signal; below, a sell signal.',
+          calculation: 'Calculation: 9-period EMA of MACD line'
+        };
+
+      case 'BB Upper':
+        return {
+          title: 'Bollinger Band Upper',
+          description: 'Upper boundary representing overbought levels. Price touching or exceeding this level suggests potential reversal or consolidation.',
+          calculation: 'Calculation: 20-period SMA + (2 × standard deviation)'
+        };
+
+      case 'BB Lower':
+        return {
+          title: 'Bollinger Band Lower',
+          description: 'Lower boundary representing oversold levels. Price touching or falling below suggests potential bounce or reversal.',
+          calculation: 'Calculation: 20-period SMA - (2 × standard deviation)'
+        };
+
+      case 'ATR':
+        return {
+          title: 'ATR (Average True Range)',
+          description: 'Volatility indicator measuring the degree of price movement. Higher values indicate higher volatility and risk.',
+          calculation: 'Calculation: 14-period average of true range values'
+        };
+
+      case 'Volume Ratio':
+        return {
+          title: 'Volume Ratio',
+          description: 'Compares current volume to average volume. Values >1.5 indicate high activity, <0.7 indicate low activity.',
+          calculation: 'Calculation: Current volume ÷ 20-period average volume'
+        };
+
+      case 'Support':
+        return {
+          title: 'Support Level',
+          description: 'Price level where buying pressure typically prevents further decline.',
+          calculation: 'Calculation: Based on EMA levels and price percentiles'
+        };
+
+      case 'Resistance':
+        return {
+          title: 'Resistance Level',
+          description: 'Price level where selling pressure typically prevents further rise.',
+          calculation: 'Calculation: Based on EMA levels and price percentiles'
+        };
+
+      default:
+        return {
+          title: name,
+          description: 'Technical indicator',
+          calculation: 'N/A'
+        };
+    }
+  };
+
   const indicatorsData = [
     { name: 'EMA20', value: technicalData?.ema20 },
     { name: 'EMA50', value: technicalData?.ema50 },
@@ -161,10 +249,26 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
                     <tbody>
                       {indicatorsData.map((indicator, index) => {
                         const signal = getIndicatorSignal(indicator.name, indicator.value, currentPrice);
+                        const tooltip = getIndicatorTooltip(indicator.name);
                         return (
                           <tr key={indicator.name} className="border-b border-gray-200/40 last:border-0 hover:bg-gray-50 transition-colors duration-150">
                             <td className="py-1.5 px-2 text-gray-600">{index + 1}</td>
-                            <td className="py-1.5 px-2 text-gray-800 font-medium">{indicator.name}</td>
+                            <td className="py-1.5 px-2 text-gray-800 font-medium">
+                              <div className="flex items-center gap-1">
+                                <span>{indicator.name}</span>
+                                <div className="group relative">
+                                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                  <div className="invisible group-hover:visible absolute left-0 top-4 z-10 w-56 p-2 bg-gray-700 text-white text-[10px] rounded-lg shadow-lg">
+                                    <div className="absolute -top-1 left-1 w-2 h-2 bg-gray-700 rotate-45"></div>
+                                    <div className="font-semibold mb-1">{tooltip.title}</div>
+                                    <div className="mb-1">{tooltip.description}</div>
+                                    <div className="text-gray-300 text-[9px] italic">{tooltip.calculation}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
                             <td className="py-1.5 px-2 text-right text-gray-900 font-medium">
                               {indicator.value !== undefined && indicator.value !== null
                                 ? indicator.value.toFixed(2)
