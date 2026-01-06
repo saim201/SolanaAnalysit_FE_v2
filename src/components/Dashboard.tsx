@@ -1,190 +1,168 @@
-import type { TradeAnalysisResponse, TickerResponse } from '../types';
-
-interface MarketData {
-  currentPrice: number;
-  priceChange24h: number;
-  ema20: number;
-  ema50: number;
-  support: number;
-  resistance: number;
-  volume: {
-    current: number;
-    average: number;
-    status: 'LOW' | 'NORMAL' | 'HIGH';
-  };
-  trend: {
-    daily: 'Bearish' | 'Bullish' | 'Neutral';
-    fourHour: 'Bearish' | 'Bullish' | 'Neutral';
-    adx: number;
-    adxStatus: 'Weak' | 'Strong';
-  };
-  indicators: {
-    rsi: number;
-    macd: 'Bullish' | 'Bearish' | 'Neutral';
-  };
-  trackRecord: {
-    wins: number;
-    holds: number;
-    losses: number;
-    accuracy: number;
-  };
-}
+import type { TradeAnalysisResponse, TechnicalDataResponse, TickerResponse } from '../types';
 
 interface TradingDashboardProps {
   analysis: TradeAnalysisResponse;
-  marketData?: MarketData | null;
+  technicalData?: TechnicalDataResponse | null;
   tickerData?: TickerResponse | null;
+  loading: boolean;
+  onRunAnalysis: () => void;
 }
 
-export default function Dashboard({ analysis, marketData, tickerData }: TradingDashboardProps) {
-  const { technical_analysis, trader_analysis } = analysis;
+export default function Dashboard({ analysis, technicalData, tickerData, loading, onRunAnalysis }: TradingDashboardProps) {
+  const getTimeSinceUpdate = () => {
+    // Use ticker timestamp for real-time updates
+    if (!tickerData?.timestamp) {
+      // Fallback to analysis timestamp
+      if (!analysis?.timestamp) return '—';
+      const now = new Date();
+      const updateTime = new Date(analysis.timestamp);
+      const diffMs = now.getTime() - updateTime.getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
 
-  const currentPrice = marketData?.currentPrice || 0;
-  const priceChange24h = marketData?.priceChange24h || 0;
+      if (diffHours > 0) {
+        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      } else if (diffMins > 0) {
+        return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      } else {
+        return 'just now';
+      }
+    }
 
-  const currentTime = new Date(tickerData?.timestamp || '').toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-  });
+    // Use ticker timestamp for accurate real-time display
+    const now = new Date();
+    const tickerTime = new Date(tickerData.timestamp);
+    const diffMs = now.getTime() - tickerTime.getTime();
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+
+    if (diffSecs < 10) {
+      return 'just now';
+    } else if (diffSecs < 60) {
+      return `${diffSecs} seconds ago`;
+    } else if (diffMins === 1) {
+      return '1 minute ago';
+    } else if (diffMins < 60) {
+      return `${diffMins} minutes ago`;
+    } else {
+      const diffHours = Math.floor(diffMins / 60);
+      return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    }
+  };
+
+  const getStatusInfo = (): { status: string; color: string; animate: boolean } => {
+    // Use ticker timestamp to determine if data is live
+    if (!tickerData?.timestamp) {
+      return { status: 'Idle', color: 'bg-gray-400', animate: false };
+    }
+
+    const now = new Date();
+    const tickerTime = new Date(tickerData.timestamp);
+    const diffMs = now.getTime() - tickerTime.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    // Live if updated within last 3 minutes
+    if (diffMins < 3) {
+      return { status: 'Live', color: 'bg-green-500', animate: true };
+    } else {
+      return { status: 'Idle', color: 'bg-gray-400', animate: false };
+    }
+  };
+
+  const statusInfo = getStatusInfo();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Hero Section */}
+      <div className="glass-card rounded-xl p-8 sm:p-12 text-center">
+        <p className="text-gray-600 text-sm mb-6 leading-relaxed max-w-3xl mx-auto">
+          This system doesn't auto-analyse currently. Click the button below to run the analysis and get the latest results based on current market data.
+        </p>
+        <button
+          onClick={onRunAnalysis}
+          disabled={loading}
+          className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gray-900 hover:bg-black text-white text-base font-semibold rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-lg"
+        >
+          {loading ? (
+            <>
+              <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Analysing...</span>
+            </>
+          ) : (
+            <>
+              <span className='cursor-pointer'>Run Analysis </span>
+            </>
+          )}
+        </button>
+        <p className="text-sm text-gray-500 mt-4">
+          Last analysis completed {getTimeSinceUpdate()}
+        </p>
+      </div>
 
-      {/* Market Stats Header Section */}
-      <div className="glass-card rounded-xl p-3 sm:p-4 md:p-5">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 mb-3 md:mb-4 border-b border-gray-200 gap-2">
-          <div className="flex items-center gap-2">
-            {/* <div className="w-2 h-2 bg-green-500 rounded-full"></div> */}
-            <h2 className="text-sm sm:text-base font-semibold text-gray-900">SOL/USDT</h2>
-          </div>
-          <div className="text-xs text-gray-500">Updated at: {currentTime}</div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
-
-          {/* Current Price */}
-          <div className="glass-card rounded-lg p-2 sm:p-3 col-span-2 sm:col-span-1">
-            <div className="text-xs text-gray-500 uppercase mb-1.5 font-medium">Current Price</div>
-            <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-0.5">${currentPrice.toFixed(2)}</div>
-            <div className={`text-xs font-semibold ${priceChange24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              <span className="text-xs font-normal text-gray-400">Last 24h: </span>{priceChange24h >= 0 ? '+' : ''}{priceChange24h.toFixed(1)}%
+      {/* Status Bar */}
+      <div className="glass-card rounded-xl p-5">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-0">
+          {/* Status */}
+          <div className="flex items-center justify-center gap-2 flex-1 w-full sm:w-auto">
+            <span className="text-sm text-gray-600">Status:</span>
+            <div className="flex items-center gap-1.5">
+              <div className={`w-2 h-2 ${statusInfo.color} rounded-full ${statusInfo.animate ? 'animate-pulse' : ''}`}></div>
+              <span className="font-semibold text-gray-900">{statusInfo.status}</span>
             </div>
           </div>
-          <div className="glass-card rounded-lg p-2 sm:p-3">
-            <div className="text-xs text-gray-500 uppercase mb-1.5 font-medium">Open</div>
-            <div className="text-sm sm:text-lg font-bold text-gray-900">${tickerData ? tickerData.openPrice.toFixed(2) : '0.00'}</div>
+
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-6 bg-gray-300 mx-6"></div>
+
+          {/* Last Updated */}
+          <div className="flex items-center justify-center gap-2 flex-1 w-full sm:w-auto">
+            <span className="text-sm text-gray-600">Last Updated:</span>
+            <span className="font-semibold text-gray-900">
+              {analysis?.timestamp ? getTimeSinceUpdate() : '—'}
+            </span>
           </div>
-          <div className="glass-card rounded-lg p-2 sm:p-3">
-            <div className="text-xs text-gray-500 uppercase mb-1.5 font-medium">High</div>
-            <div className="text-sm sm:text-lg font-bold text-gray-900">${tickerData ? tickerData.highPrice.toFixed(2) : '0.00'}</div>
-          </div>
-          <div className="glass-card rounded-lg p-2 sm:p-3">
-            <div className="text-xs text-gray-500 uppercase mb-1.5 font-medium">Low</div>
-            <div className="text-sm sm:text-lg font-bold text-gray-900">${tickerData ? tickerData.lowPrice.toFixed(2) : '0.00'}</div>
-          </div>
-          <div className="glass-card rounded-lg p-2 sm:p-3">
-            <div className="text-xs text-gray-500 uppercase mb-1.5 font-medium">Close</div>
-            <div className="text-sm sm:text-lg font-bold text-gray-900">${tickerData ? tickerData.lastPrice.toFixed(2) : '0.00'}</div>
-          </div>
-          <div className="glass-card rounded-lg p-2 sm:p-3 col-span-2 sm:col-span-1">
-            <div className="flex items-center justify-between mb-1.5">
-              <div className="text-xs text-gray-500 uppercase font-medium">Vol (SOL)</div>
-              <div className="text-sm sm:text-lg font-bold text-gray-900">{tickerData ? (tickerData.volume / 1_000_000).toFixed(2) : '0.00'}M</div>
+
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-6 bg-gray-300 mx-6"></div>
+
+          {/* SOL/USDT */}
+          <div className="flex items-center justify-center gap-2 flex-1 w-full sm:w-auto">
+            <span className="text-sm text-gray-600">SOL/USDT:</span>
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-gray-900">
+                ${tickerData?.lastPrice?.toFixed(2) || technicalData?.currentPrice?.toFixed(2) || '—'}
+              </span>
+              {tickerData?.priceChangePercent !== undefined ? (
+                <span className={`text-xs font-semibold ${tickerData.priceChangePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {tickerData.priceChangePercent >= 0 ? '+' : ''}{tickerData.priceChangePercent.toFixed(1)}%
+                </span>
+              ) : technicalData?.priceChange24h !== undefined ? (
+                <span className={`text-xs font-semibold ${technicalData.priceChange24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {technicalData.priceChange24h >= 0 ? '+' : ''}{technicalData.priceChange24h.toFixed(1)}%
+                </span>
+              ) : null}
             </div>
-            <div className="flex items-center justify-between">
-              <div className="text-xs text-gray-500 uppercase font-medium">Vol (USDT)</div>
-              <div className="text-sm sm:text-lg font-bold text-gray-900">${tickerData ? (tickerData.quoteVolume / 1_000_000_000).toFixed(2) : '0.00'}B</div>
-            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-6 bg-gray-300 mx-6"></div>
+
+          {/* 24h Volume */}
+          <div className="flex items-center justify-center gap-2 flex-1 w-full sm:w-auto">
+            <span className="text-sm text-gray-600">24h Volume:</span>
+            <span className="font-bold text-gray-900">
+              {tickerData?.quoteVolume
+                ? `$${(tickerData.quoteVolume / 1_000_000_000).toFixed(2)}B`
+                : technicalData?.volume_current
+                ? `$${(technicalData.volume_current * 1000).toFixed(2)}B`
+                : '—'}
+            </span>
           </div>
         </div>
       </div>
-
-
-      {/* Trading Signal Summary */}
-      <div className="glass-card rounded-xl p-3 sm:p-4 md:p-5">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 mb-3 md:mb-4 border-b border-gray-200 gap-2">
-          <h3 className="text-sm sm:text-base font-bold text-gray-900">Technical analyst findings</h3>
-          <div className="flex items-center gap-3">
-            {/* <span className="text-xs sm:text-sm text-gray-600">Confidence: {(trader_analysis.confidence * 100).toFixed(0)}%</span> */}
-          </div>
-        </div>
-
-        {/* Trade Setup or Analysis Summary */}
-        {trader_analysis.execution_plan && trader_analysis.execution_plan.entry_price_target ? (
-          <>
-            <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">Trade Setup</h4>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
-              <div className="glass-card rounded-lg p-2 sm:p-3">
-                <div className="text-xs text-gray-500 mb-1">Entry</div>
-                <div className="text-sm sm:text-lg font-bold text-gray-900">
-                  ${trader_analysis.execution_plan.entry_price_target.toFixed(2)}
-                </div>
-              </div>
-              <div className="glass-card rounded-lg p-2 sm:p-3">
-                <div className="text-xs text-gray-500 mb-1">Stop Loss</div>
-                <div className="text-sm sm:text-lg font-bold text-red-600">
-                  {trader_analysis.execution_plan.stop_loss ? `$${trader_analysis.execution_plan.stop_loss.toFixed(2)}` : '──'}
-                </div>
-              </div>
-              <div className="glass-card rounded-lg p-2 sm:p-3">
-                <div className="text-xs text-gray-500 mb-1">Target</div>
-                <div className="text-sm sm:text-lg font-bold text-green-600">
-                  {trader_analysis.execution_plan.take_profit ? `$${trader_analysis.execution_plan.take_profit.toFixed(2)}` : '──'}
-                </div>
-              </div>
-              <div className="glass-card rounded-lg p-2 sm:p-3">
-                <div className="text-xs text-gray-500 mb-1">Risk/Reward</div>
-                <div className="text-sm sm:text-lg font-bold text-gray-900">
-                  {trader_analysis.execution_plan.risk_reward_ratio || '──'}
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            {/* <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">What To Do</h4> */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div className="p-2.5 rounded border-l-2 border-green-500">
-                <div className="text-[10px] font-semibold text-green-700 mb-1">For Buyers</div>
-                <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.for_buyers}</p>
-              </div>
-              <div className="p-2.5 rounded border-l-2 border-red-500">
-                <div className="text-[10px] font-semibold text-red-700 mb-1">For Sellers</div>
-                <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.for_sellers}</p>
-              </div>
-              <div className="p-2.5 rounded border-l-2 border-blue-500">
-                <div className="text-[10px] font-semibold text-blue-700 mb-1">If Holding</div>
-                <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.if_holding}</p>
-              </div>
-              <div className="p-2.5 rounded border-l-2 border-amber-500">
-                <div className="text-[10px] font-semibold text-amber-700 mb-1">Avoid</div>
-                <p className="text-[11px] text-gray-700 leading-snug">{technical_analysis.action_plan.avoid}</p>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* Key Insight */}
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <div className="flex items-start gap-3 bg-gray-50 rounded-lg p-3">
-            <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="flex-1">
-              <div className="text-xs font-bold text-gray-900 mb-1">Key Insight</div>
-              <div className="text-xs text-gray-700">
-                {trader_analysis.reasoning || technical_analysis.confidence.interpretation || 'Analysing market conditions...'}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   );
 }

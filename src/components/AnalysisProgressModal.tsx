@@ -76,6 +76,9 @@ const AnalysisProgressModal = ({ isOpen, steps }: AnalysisProgressModalProps) =>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Running Analysis
           </h2>
+          <p className="text-sm text-gray-600">
+            This may take 20-40 seconds. Please wait while our AI anaklysts analyse the current market.
+          </p>
         </div>
 
         {/* Progress Steps */}
@@ -140,13 +143,6 @@ const AnalysisProgressModal = ({ isOpen, steps }: AnalysisProgressModalProps) =>
             />
           </div>
         </div> */}
-
-        {/* Info Text */}
-        <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500">
-            This may take 10-30 seconds. Please wait while our AI agents analyse the market.
-          </p>
-        </div>
       </div>
     </div>
   );

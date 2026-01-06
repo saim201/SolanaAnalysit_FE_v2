@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import type { TradeAnalysisResponse, TechnicalDataResponse } from './types';
+import type { TradeAnalysisResponse, TechnicalDataResponse, TickerResponse } from './types';
 import { api } from './services/api';
 import AnalysisTabs from './components/AnalysisTabs';
+import Dashboard from './components/Dashboard';
 import ProjectHighlightsModal from './components/ProjectHighlightsModal';
 import LoadingScreen from './components/LoadingScreen';
 import AnalysisProgressModal from './components/AnalysisProgressModal';
@@ -17,6 +18,7 @@ interface ProgressStep {
 function App() {
   const [analysis, setAnalysis] = useState<TradeAnalysisResponse | null>(null);
   const [technicalData, setTechnicalData] = useState<TechnicalDataResponse | null>(null);
+  const [tickerData, setTickerData] = useState<TickerResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,13 +58,15 @@ function App() {
     const fetchLatestAnalysis = async () => {
       setInitialLoading(true);
       try {
-        const [latestAnalysis, techData] = await Promise.all([
+        const [latestAnalysis, techData, ticker] = await Promise.all([
           api.getLatestAnalysis(),
-          api.getTechnicalData()
+          api.getTechnicalData(),
+          api.getTicker()
         ]);
 
         setAnalysis(latestAnalysis);
         setTechnicalData(techData);
+        setTickerData(ticker);
       } catch {
         console.log('No previous analysis found, start fresh');
       } finally {
@@ -71,6 +75,18 @@ function App() {
     };
 
     fetchLatestAnalysis();
+
+    // Refresh ticker data every 30 seconds
+    const tickerInterval = setInterval(async () => {
+      try {
+        const ticker = await api.getTicker();
+        setTickerData(ticker);
+      } catch (error) {
+        console.error('Failed to refresh ticker:', error);
+      }
+    }, 30000);
+
+    return () => clearInterval(tickerInterval);
   }, []);
 
 
@@ -113,8 +129,12 @@ function App() {
 
       setAnalysis(analysisData);
 
-      const techData = await api.getTechnicalData();
+      const [techData, ticker] = await Promise.all([
+        api.getTechnicalData(),
+        api.getTicker()
+      ]);
       setTechnicalData(techData);
+      setTickerData(ticker);
 
       ReactGA.event({
         category: 'Analysis',
@@ -208,30 +228,6 @@ function App() {
                 <span className="hidden sm:inline">Project Info</span>
                 <span className="sm:hidden">Info</span>
               </button>
-              <button
-                onClick={handleAnalyse}
-                disabled={loading}
-                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 sm:gap-2"
-              >
-                {loading ? (
-                <>
-                  <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span className="hidden sm:inline">Analysing...</span>
-                  <span className="sm:hidden">Analysing...</span>
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span className="hidden sm:inline">Run Analysis</span>
-                  <span className="sm:hidden">Analyze</span>
-                </>
-              )}
-              </button>
             </div>
           </div>
         </div>
@@ -255,10 +251,16 @@ function App() {
 
         {analysis && (
           <>
-            {/* Trading Dashboard - Overview */}
-            {/* <div className="mb-6 sm:mb-8">
-              <Dashboard analysis={analysis} marketData={getMarketData()} tickerData={tickerData} />
-            </div> */}
+            {/* Hero Section and Status Bar */}
+            <div className="mb-6 sm:mb-8">
+              <Dashboard
+                analysis={analysis}
+                technicalData={technicalData}
+                tickerData={tickerData}
+                loading={loading}
+                onRunAnalysis={handleAnalyse}
+              />
+            </div>
 
             {/* Agent Analysis Tabs */}
             <div className="mb-4 sm:mb-6">
