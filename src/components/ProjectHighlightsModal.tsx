@@ -33,12 +33,24 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
   const techStack = [
     { category: "Backend", items: ["Python", "FastAPI", "LangGraph", "Claude AI", "PostgreSQL"] },
     { category: "Frontend", items: ["React", "TypeScript", "Tailwind CSS"] },
-    { category: "APIs", items: ["Binance", "CFGI", "RSS Feeds", "RESTful Architecture"] }
+    { category: "Data Sources", items: ["Binance", "CFGI", "RSS Feeds", "RESTful Architecture"] },
+    { category: "Infrastructure", items: ["AWS Lambda", "AWS RDS", "Netlify", "Docker"] }
+  ];
+
+  const features = [
+    "Multi-source real-time data",
+    "Multi-agent verification",
+    "Transparent reasoning chain",
+    "Explainable AI decisions",
+    "Full decision audit trail",
+    "Blind spot detection",
+    "Technical + sentiment fusion",
+    "Confidence-calibrated outputs"
   ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-gray-200">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-gray-200">
         {/* Header */}
         <div className="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
           <div className="flex items-center justify-between">
@@ -101,8 +113,8 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
 
           {/* Tech Stack */}
           <section>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Technology Stack</h3>
-            <div className="grid grid-cols-3 gap-3">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Tech Stack</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {techStack.map((stack, idx) => (
                 <div key={idx} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
                   <h4 className="font-semibold text-gray-900 text-xs mb-2">{stack.category}</h4>
@@ -123,43 +135,15 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
           <section>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Features</h3>
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <ul className="grid grid-cols-2 gap-2 text-xs text-gray-700">
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Real-time market data
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Chain-of-thought reasoning
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Risk-first decision logic
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Complete audit trail
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Weighted consensus
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Sentiment analysis
-                </li>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-700">
+                {features.map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
               </ul>
             </div>
           </section>
