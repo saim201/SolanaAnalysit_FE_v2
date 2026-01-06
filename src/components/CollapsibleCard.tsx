@@ -65,16 +65,33 @@ export default function CollapsibleCard({
     });
   };
 
+  // If onToggle is undefined, we're in tab mode - show simplified header
+  if (onToggle === undefined) {
+    return (
+      <div className={`glass-card rounded-xl overflow-hidden ${className}`}>
+        <div className="p-3 sm:p-4 md:p-5 pb-3">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">{title}</h2>
+            {lastUpdated && (
+              <span className="text-xs text-gray-500">
+                Updated: {formatDate(lastUpdated)}
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="px-3 sm:px-4 md:px-6 pb-4 sm:pb-5 md:pb-6 pt-0">
+          {children}
+        </div>
+      </div>
+    );
+  }
+
+  // Regular collapsible card mode
   return (
     <div className={`glass-card rounded-xl overflow-hidden transition-all duration-300 ${className}`}>
       <button
         onClick={handleToggle}
-        disabled={onToggle === undefined}
-        className={`w-full p-3 sm:p-4 md:p-5 flex items-center justify-between transition-all duration-200 ${
-          onToggle === undefined
-            ? 'cursor-not-allowed opacity-60'
-            : 'cursor-pointer hover:bg-white/40'
-        }`}
+        className="w-full p-3 sm:p-4 md:p-5 flex items-center justify-between transition-all duration-200 cursor-pointer hover:bg-white/40"
       >
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 min-w-0">
           {iconText && (

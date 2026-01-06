@@ -1,13 +1,8 @@
 import { useState, useEffect } from 'react';
-import type { TradeAnalysisResponse, TechnicalDataResponse, TickerResponse } from './types';
+import type { TradeAnalysisResponse, TechnicalDataResponse } from './types';
 import { api } from './services/api';
-import TechnicalAnalysisCard from './components/TechnicalAnalysisCard';
-import SentimentAnalysisCard from './components/SentimentAnalysisCard';
-import ReflectionAnalysisCard from './components/ReflectionAnalysisCard';
-import TraderAnalysisCard from './components/TraderAnalysisCard';
-import HistoricalPredictions from './components/HistoricalPredictions';
+import AnalysisTabs from './components/AnalysisTabs';
 import ProjectHighlightsModal from './components/ProjectHighlightsModal';
-import Dashboard from './components/Dashboard';
 import LoadingScreen from './components/LoadingScreen';
 import AnalysisProgressModal from './components/AnalysisProgressModal';
 import ReactGA from 'react-ga4';
@@ -22,12 +17,10 @@ interface ProgressStep {
 function App() {
   const [analysis, setAnalysis] = useState<TradeAnalysisResponse | null>(null);
   const [technicalData, setTechnicalData] = useState<TechnicalDataResponse | null>(null);
-  const [tickerData, setTickerData] = useState<TickerResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showProjectModal, setShowProjectModal] = useState(false);
-  const [openCard, setOpenCard] = useState<string | null>(null);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [progressSteps, setProgressSteps] = useState<ProgressStep[]>([
@@ -38,20 +31,6 @@ function App() {
     { id: 'trader_agent', label: 'Trader Agent', status: 'pending' },
     { id: 'complete', label: 'Finalising Results', status: 'pending' },
   ]);
-
-  const handleCardToggle = (cardName: string) => {
-    const isExpanding = openCard !== cardName;
-
-    if (isExpanding) {
-      ReactGA.event({
-        category: 'Card Interaction',
-        action: 'Card Expanded',
-        label: cardName
-      });
-    }
-
-    setOpenCard(openCard === cardName ? null : cardName);
-  };
 
   const handleProjectModalOpen = () => {
     ReactGA.event({
@@ -77,15 +56,13 @@ function App() {
     const fetchLatestAnalysis = async () => {
       setInitialLoading(true);
       try {
-        const [latestAnalysis, techData, ticker] = await Promise.all([
+        const [latestAnalysis, techData] = await Promise.all([
           api.getLatestAnalysis(),
-          api.getTechnicalData(),
-          api.getTicker()
+          api.getTechnicalData()
         ]);
 
         setAnalysis(latestAnalysis);
         setTechnicalData(techData);
-        setTickerData(ticker);
       } catch {
         console.log('No previous analysis found, start fresh');
       } finally {
@@ -136,13 +113,8 @@ function App() {
 
       setAnalysis(analysisData);
 
-      const [techData, ticker] = await Promise.all([
-        api.getTechnicalData(),
-        api.getTicker()
-      ]);
-
+      const techData = await api.getTechnicalData();
       setTechnicalData(techData);
-      setTickerData(ticker);
 
       ReactGA.event({
         category: 'Analysis',
@@ -184,56 +156,6 @@ function App() {
     }
   };
 
-  // console.log("Analysts Data: ", analysis)
-  // console.log("technical Data: ", technicalData)
-  // console.log("ticker Data: ", tickerData)
-
-
-  const getMarketData = () => {
-    if (!technicalData) {
-      return null;
-    }
-    let volumeStatus: 'LOW' | 'NORMAL' | 'HIGH' = 'NORMAL';
-    if (technicalData.volume_ratio < 0.7) volumeStatus = 'LOW';
-    else if (technicalData.volume_ratio > 1.5) volumeStatus = 'HIGH';
-    let macdStatus: 'Bullish' | 'Bearish' | 'Neutral' = 'Neutral';
-    if (technicalData.macd_line > technicalData.macd_signal) macdStatus = 'Bullish';
-    else if (technicalData.macd_line < technicalData.macd_signal) macdStatus = 'Bearish';
-
-    return {
-      currentPrice: technicalData.currentPrice,
-      priceChange24h: technicalData.priceChange24h,
-      ema50: technicalData.ema50,
-      ema20: technicalData.ema20,
-      support: technicalData.support,
-      resistance: technicalData.resistance,
-      volume: {
-        current: technicalData.volume_ratio,
-        average: technicalData.volume_average,
-        status: volumeStatus
-      },
-      trend: {
-        daily: 'Neutral' as const,
-        fourHour: 'Neutral' as const,
-        adx: 0,
-        adxStatus: 'Weak' as const
-      },
-      indicators: {
-        rsi: technicalData.rsi,
-        macd: macdStatus
-      },
-      trackRecord: {
-        wins: 0,
-        holds: 0,
-        losses: 0,
-        accuracy: 0
-      }
-    };
-  }
-
-
-
-
   if (initialLoading) {
     return <LoadingScreen />;
   }
@@ -267,7 +189,7 @@ function App() {
 
       {/* Header */}
       <header className="glass-header sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+        <div className="max-w-7xl mx-auto px-2 sm:px-3 md:px-4 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
@@ -319,7 +241,7 @@ function App() {
       {/* <SystemBanner /> */}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+      <main className="max-w-7xl mx-auto px-2 sm:px-3 md:px-4 py-4 sm:py-6 md:py-8">
         {error && (
           <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50/80 border border-red-200/60 rounded-xl text-red-700 backdrop-blur-sm shadow-sm">
             <div className="flex items-center gap-2">
@@ -334,61 +256,19 @@ function App() {
         {analysis && (
           <>
             {/* Trading Dashboard - Overview */}
-            <div className="mb-6 sm:mb-8">
+            {/* <div className="mb-6 sm:mb-8">
               <Dashboard analysis={analysis} marketData={getMarketData()} tickerData={tickerData} />
-            </div>
+            </div> */}
 
-            {/* Agent Analysis Cards */}
+            {/* Agent Analysis Tabs */}
             <div className="mb-4 sm:mb-6">
               <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-1.5 sm:mb-2">Detailed Analysis</h2>
               <p className="text-xs sm:text-sm text-gray-600">
-                Expand each card to view full reasoning, complete data breakdown, and chain-of-thought reasoning of each specialised analyst.
+                Switch between tabs to view full reasoning, complete data breakdown, and chain-of-thought reasoning of each specialised analyst.
               </p>
             </div>
 
-            <div className='mb-6 sm:mb-8'>
-              <TechnicalAnalysisCard
-                analysis={analysis.technical_analysis}
-                technicalData={technicalData}
-                isExpanded={openCard === 'technical'}
-                onToggle={() => handleCardToggle('technical')}
-                timestamp={analysis.timestamp}
-              />
-            </div>
-
-            <div className='mb-6 sm:mb-8'>
-              <SentimentAnalysisCard
-                analysis={analysis.news_analysis}
-                isExpanded={openCard === 'news'}
-                onToggle={() => handleCardToggle('news')}
-                timestamp={analysis.timestamp}
-              />
-            </div>
-
-            <div className="mb-6 sm:mb-8">
-              <ReflectionAnalysisCard
-                analysis={analysis.reflection_analysis}
-                isExpanded={openCard === 'reflection'}
-                onToggle={() => handleCardToggle('reflection')}
-                timestamp={analysis.timestamp}
-              />
-            </div>
-
-            <div className="mb-6 sm:mb-8">
-              <TraderAnalysisCard
-                analysis={analysis.trader_analysis}
-                isExpanded={openCard === 'trader'}
-                onToggle={() => handleCardToggle('trader')}
-              />
-            </div>
-
-            {/* Historical Predictions */}
-            <div className="mb-6 sm:mb-8">
-              <HistoricalPredictions
-                isExpanded={openCard === 'historical'}
-                onToggle={() => handleCardToggle('historical')}
-              />
-            </div>
+            <AnalysisTabs analysis={analysis} technicalData={technicalData} />
           </>
         )}
 
@@ -407,7 +287,7 @@ function App() {
 
       {/* Footer */}
       <footer className="glass-header mt-12 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-600">
+        <div className="max-w-7xl mx-auto px-2 sm:px-3 md:px-4 text-center text-sm text-gray-600">
           <p className="font-medium">Solana (SOL/USDT) Swing Trading Analyst </p>
         </div>
       </footer>

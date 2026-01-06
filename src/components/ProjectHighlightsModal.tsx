@@ -9,24 +9,24 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
 
   const agents = [
     {
-      name: "Technical Agent",
+      name: "Technical Analyst",
       weight: "40%",
-      role: "Analyses price trends, momentum indicators, and volume patterns to identify high-probability trade setups with defined entry/exit levels."
+      role: "Processes real-time candlestick data, momentum indicators, volume patterns, and historical trends. Uses structured reasoning to identify high-probability trade setups with defined entry and exit conditions and levels(if available) ."
     },
     {
-      name: "Sentiment Agent",
+      name: "Sentiment Analyst",
       weight: "30%",
-      role: "Combines real-time Fear & Greed Index with news sentiment analysis to identify market psychology, catalysts, and risk events."
+      role: "Combines real-time Fear & Greed Index with news sentiment analysis to identify market psychology, catalysts, and risk events that could impact price action."
     },
     {
-      name: "Reflection Agent",
+      name: "Reflection Analyst",
       weight: "30%",
-      role: "Reviews technical and news analysis to identify blind spots, contradictions, and provides balanced perspective on potential risks."
+      role: "Reviews insights from Technical and Sentiment analysts to identify conflicting signals, potential blind spots, contradictions, and overlooked risks before making its final recommendation."
     },
     {
-      name: "Trader Agent",
+      name: "Trader Analyst",
       weight: "Final",
-      role: "Synthesises all agent inputs with confidence weighting to make final BUY/SELL/HOLD decision with risk management."
+      role: "Synthesises all analysts insights into actionable trading recommendations with clear reasoning, confidence levels, and risk warnings."
     }
   ];
 
@@ -67,8 +67,8 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
           <section>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">About This Project</h3>
             <p className="text-sm text-gray-700 leading-relaxed">
-              An intelligent trading analysis system that uses 4 specialised AI agents working together to analyse Solana (SOL/USDT) markets.
-              The system combines technical analysis, news sentiment, and risk assessment to generate trading recommendations with full transparency into the decision-making process.
+              A multi-agent trading analysis system built with LangGraph that processes real-time Solana market data through four specialiaed LLM agents (analysts). 
+              Each agent uses chain-of-thought prompting to show its reasoning at every step. The system tries to solve the black-box problem in AI trading by making every decision traceable and explainable.
             </p>
           </section>
 
@@ -81,9 +81,9 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <div className="flex items-start justify-between mb-2">
                       <h4 className="font-semibold text-gray-900 text-sm">{agent.name}</h4>
-                      <span className="text-xs font-medium px-2 py-1 bg-gray-900 text-white rounded">
+                      {/* <span className="text-xs font-medium px-2 py-1 bg-gray-900 text-white rounded">
                         {agent.weight}
-                      </span>
+                      </span> */}
                     </div>
                     <p className="text-xs text-gray-600 leading-relaxed">{agent.role}</p>
                   </div>

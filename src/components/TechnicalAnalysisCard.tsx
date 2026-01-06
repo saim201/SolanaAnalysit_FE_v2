@@ -96,7 +96,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
       <div className="space-y-3">
 
         {/* Market Overview Strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           <div className="glass-section p-2 rounded-lg text-center">
             <div className="text-[10px] text-gray-500 mb-0.5">Recommendation</div>
             <div className={`text-sm font-bold ${
@@ -111,37 +111,33 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
             <div className="text-xs font-semibold text-gray-800">{analysis.market_condition}</div>
           </div>
           <div className="glass-section p-2 rounded-lg text-center">
-            <div className="text-[10px] text-gray-500 mb-0.5">Analyst Confidence</div>
+            <div className="text-[10px] text-gray-500 mb-0.5">Confidence</div>
             <div className="text-sm font-bold">{(analysis.confidence.analysis_confidence * 100).toFixed(0)}%</div>
-          </div>
-          <div className="glass-section p-2 rounded-lg text-center">
-            <div className="text-[10px] text-gray-500 mb-0.5">Setup Quality</div>
-            <div className="text-sm font-bold">{(analysis.confidence.setup_quality * 100).toFixed(0)}%</div>
           </div>
         </div>
 
         {/* Action Plan - Compact Grid */}
-        {/* <div className="glass-section p-2.5 rounded-lg">
-          <h3 className="text-xs font-semibold tracking-wide text-gray-800 mb-2">What To Do</h3>
+        <div className="glass-section p-2.5 rounded-lg">
+          <h3 className="text-xs font-semibold tracking-wide text-gray-800 mb-2">Analyst Suggestion</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <div className="bg-green-50/50 p-2 rounded border-l-2 border-green-500">
+            <div className=" p-2 rounded border-l-2 border-green-500">
               <div className="text-[10px] font-semibold text-green-700 mb-0.5">For Buyers</div>
               <p className="text-[11px] text-gray-700 leading-snug">{analysis.action_plan.for_buyers}</p>
             </div>
-            <div className="bg-red-50/50 p-2 rounded border-l-2 border-red-500">
+            <div className="p-2 rounded border-l-2 border-red-500">
               <div className="text-[10px] font-semibold text-red-700 mb-0.5">For Sellers</div>
               <p className="text-[11px] text-gray-700 leading-snug">{analysis.action_plan.for_sellers}</p>
             </div>
-            <div className="bg-blue-50/50 p-2 rounded border-l-2 border-blue-500">
+            <div className="p-2 rounded border-l-2 border-blue-500">
               <div className="text-[10px] font-semibold text-blue-700 mb-0.5">If Holding</div>
               <p className="text-[11px] text-gray-700 leading-snug">{analysis.action_plan.if_holding}</p>
             </div>
-            <div className="bg-amber-50/50 p-2 rounded border-l-2 border-amber-500">
+            <div className="p-2 rounded border-l-2 border-amber-500">
               <div className="text-[10px] font-semibold text-amber-700 mb-0.5">Avoid</div>
               <p className="text-[11px] text-gray-700 leading-snug">{analysis.action_plan.avoid}</p>
             </div>
           </div>
-        </div> */}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
 
