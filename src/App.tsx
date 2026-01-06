@@ -220,12 +220,12 @@ function App() {
             <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={handleProjectModalOpen}
-                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/60 hover:bg-white/80 text-gray-800 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 sm:gap-2 border border-gray-200/60 shadow-sm backdrop-blur-sm"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/60 hover:bg-white/80 text-gray-800 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 sm:gap-2 border border-gray-200/60 shadow-sm backdrop-blur-sm cursor-pointer"
               >
                 <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="hidden sm:inline">Project Info</span>
+                <span className="hidden sm:inline ">Project Info</span>
                 <span className="sm:hidden">Info</span>
               </button>
             </div>

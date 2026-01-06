@@ -48,7 +48,7 @@ export default function AnalysisTabs({ analysis, technicalData }: AnalysisTabsPr
               onClick={() => !tab.disabled && handleTabChange(tab.id)}
               disabled={tab.disabled}
               className={`
-                flex-1 min-w-30 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200
+                flex-1 min-w-30 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer
                 ${tab.disabled
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed opacity-60'
                   : activeTab === tab.id
