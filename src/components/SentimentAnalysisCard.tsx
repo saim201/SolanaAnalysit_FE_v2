@@ -411,7 +411,7 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
                   <div className="flex items-center gap-1 pt-4">
                     <div className='text-sm text-gray-500'>Confidence:</div>
                     <div className="text-sm font-bold">
-                      {(analysis.confidence * 100).toFixed(0)}%
+                      {(analysis.confidence.analysis_confidence * 100).toFixed(0)}%
                     </div>
                   </div>
                 </div>

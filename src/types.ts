@@ -66,8 +66,12 @@ export interface TechnicalAnalysis {
 // New SentimentAnalysis interface (combines CFGI + News)
 export interface SentimentAnalysis {
   timestamp?: string;
-  signal: string;  // BULLISH, BEARISH, NEUTRAL, etc.
-  confidence: number;
+  signal: string;  // SLIGHTLY_BULLISH, BULLISH, BEARISH, NEUTRAL, etc.
+  confidence: {
+    analysis_confidence: number;
+    signal_strength: number;
+    interpretation: string;
+  };
 
   market_fear_greed: {
     score: number;
@@ -80,7 +84,7 @@ export interface SentimentAnalysis {
 
   news_sentiment: {
     score: number;
-    label: string;
+    label: string;  // CAUTIOUSLY_BULLISH, BULLISH, BEARISH, etc.
     catalysts_count: number;
     risks_count: number;
   };
@@ -89,7 +93,7 @@ export interface SentimentAnalysis {
     title: string;
     published_at: string;
     url?: string;
-    type: string;
+    type: string;  // ECOSYSTEM, MARKET_TREND, PARTNERSHIP, etc.
     impact: string;  // BULLISH, BEARISH, NEUTRAL
     source: string;
     reasoning?: string;
@@ -103,8 +107,6 @@ export interface SentimentAnalysis {
   thinking?: string;
 }
 
-// Backward compatibility: NewsAnalysis now points to SentimentAnalysis
-export type NewsAnalysis = SentimentAnalysis;
 
 export interface ReflectionAnalysis {
   timestamp?: string;
@@ -175,7 +177,7 @@ export interface TraderAnalysis {
 
 export interface TradeAnalysisResponse {
   technical_analysis: TechnicalAnalysis;
-  news_analysis: SentimentAnalysis;  // API still uses 'news_analysis' but contains SentimentAnalysis data
+  sentiment_analysis: SentimentAnalysis;
   reflection_analysis: ReflectionAnalysis;
   trader_analysis: TraderAnalysis;
   timestamp: string;

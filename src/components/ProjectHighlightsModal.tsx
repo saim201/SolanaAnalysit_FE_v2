@@ -26,7 +26,7 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
     {
       name: "Trader Analyst",
       weight: "Final",
-      role: "Synthesises all analysts insights into actionable trading recommendations with clear reasoning, confidence levels, and risk warnings."
+      role: "Synthesises all 3 analyst's insights into actionable trading recommendations with clear reasoning, confidence levels, and risk warnings."
     }
   ];
 
@@ -79,14 +79,14 @@ export default function ProjectHighlightsModal({ isOpen, onClose }: ProjectHighl
           <section>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">About This Project</h3>
             <p className="text-sm text-gray-700 leading-relaxed">
-              A multi-agent trading analysis system built with LangGraph that processes real-time Solana market data through four specialiaed LLM agents (analysts). 
-              Each agent uses chain-of-thought prompting to show its reasoning at every step. The system tries to solve the black-box problem in AI trading by making every decision traceable and explainable.
+              A multi-agent trading analysis system built with LangGraph that processes real-time Solana market data through four specialised LLM agents (analysts). 
+              Each analyst uses chain-of-thought prompting to show its reasoning at every step. The system tries to solve the black-box problem in AI trading by making every decision traceable and explainable.
             </p>
           </section>
 
           {/* Agent Flow */}
           <section>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Agent Pipeline Flow</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Pipeline Flow</h3>
             <div className="space-y-3">
               {agents.map((agent, idx) => (
                 <div key={idx} className="relative">

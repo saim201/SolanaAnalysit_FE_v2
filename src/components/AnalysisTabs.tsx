@@ -82,7 +82,7 @@ export default function AnalysisTabs({ analysis, technicalData }: AnalysisTabsPr
 
         {activeTab === 'sentiment' && (
           <SentimentAnalysisCard
-            analysis={analysis.news_analysis}
+            analysis={analysis.sentiment_analysis}
             isExpanded={true}
             onToggle={undefined}
             timestamp={analysis.timestamp}

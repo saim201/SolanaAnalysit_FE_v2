@@ -137,7 +137,7 @@ export default function Dashboard({ analysis, technicalData, tickerData, loading
               </span>
               {tickerData?.priceChangePercent !== undefined ? (
                 <span className={`text-xs font-semibold ${tickerData.priceChangePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {tickerData.priceChangePercent >= 0 ? '+' : ''}{tickerData.priceChangePercent.toFixed(1)}%
+                  {tickerData.priceChangePercent >= 0 ? '+' : ''}{tickerData.priceChangePercent.toFixed(1)}% (24h)
                 </span>
               ) : technicalData?.priceChange24h !== undefined ? (
                 <span className={`text-xs font-semibold ${technicalData.priceChange24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
