@@ -291,11 +291,9 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
                           <h4 className="font-semibold text-gray-900 mb-1 text-sm leading-tight">{event.title}</h4>
                         )}
 
-                        {event.reasoning && (
-                          <p className="text-xs text-gray-600 leading-relaxed">
-                            {event.reasoning}
-                          </p>
-                        )}
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          {event.source} • {new Date(event.published_at).toLocaleDateString()}
+                        </p>
                       </div>
                     </div>
                   ))}
