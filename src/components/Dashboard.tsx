@@ -4,14 +4,15 @@ interface TradingDashboardProps {
   analysis: TradeAnalysisResponse;
   technicalData?: TechnicalDataResponse | null;
   tickerData?: TickerResponse | null;
+  analysisCompletionTimestamp?: string | null;
   loading: boolean;
   onRunAnalysis: () => void;
 }
 
-export default function Dashboard({ analysis, technicalData, tickerData, loading, onRunAnalysis }: TradingDashboardProps) {
+export default function Dashboard({ analysis, technicalData, tickerData, analysisCompletionTimestamp, loading, onRunAnalysis }: TradingDashboardProps) {
   const getTimeSinceUpdate = () => {
-    // Use ticker timestamp for real-time updates
-    if (!tickerData?.timestamp) {
+    // Use analysis completion timestamp from analysis_progress table
+    if (!analysisCompletionTimestamp) {
       // Fallback to analysis timestamp
       if (!analysis?.timestamp) return '—';
       const now = new Date();
@@ -29,10 +30,10 @@ export default function Dashboard({ analysis, technicalData, tickerData, loading
       }
     }
 
-    // Use ticker timestamp for accurate real-time display
+    // Use analysis completion timestamp for accurate display
     const now = new Date();
-    const tickerTime = new Date(tickerData.timestamp);
-    const diffMs = now.getTime() - tickerTime.getTime();
+    const completionTime = new Date(analysisCompletionTimestamp);
+    const diffMs = now.getTime() - completionTime.getTime();
     const diffSecs = Math.floor(diffMs / 1000);
     const diffMins = Math.floor(diffSecs / 60);
 

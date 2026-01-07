@@ -12,272 +12,268 @@ interface TraderAnalysisCardProps {
 export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, timestamp }: TraderAnalysisCardProps) {
   return (
     <CollapsibleCard
-      title="Trading Analyst"
-      functionalities="3-agent synthesis • Confidence weighting • Trade execution"
+      title="Chief Trading Officer"
+      functionalities="Final decision • 3-agent synthesis • Trade execution plan"
       lastUpdated={analysis.timestamp || timestamp}
-      defaultExpanded={false}
+      defaultExpanded={true}
       isExpanded={isExpanded}
       onToggle={onToggle}
     >
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-6">
+      <div className="space-y-4">
 
-          {/* Left Column */}
-          <div className="space-y-6">
+        {/* Decision Overview */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Recommendation</div>
+            <div className={`text-sm font-bold ${
+              analysis.recommendation_signal === 'BUY' ? 'text-green-600' :
+              analysis.recommendation_signal === 'SELL' ? 'text-red-600' :
+              analysis.recommendation_signal === 'WAIT' ? 'text-amber-600' :
+              'text-gray-600'
+            }`}>{analysis.recommendation_signal}</div>
+          </div>
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Market State</div>
+            <div className="text-xs font-semibold text-gray-800">{analysis.market_condition}</div>
+          </div>
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Confidence</div>
+            <div className="text-sm font-bold">{(analysis.confidence.score * 100).toFixed(0)}%</div>
+          </div>
+        </div>
 
-            {/* Agent Synthesis */}
-            {analysis.agent_synthesis && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium tracking-wide">
-                  Agent Synthesis
-                </h3>
-                <div className="glass-section p-4 rounded-xl">
-                  {analysis.agent_synthesis.weighted_confidence !== undefined && (
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm">Weighted Confidence</span>
-                      <span className="text-sm font-semibold">
-                        {(analysis.agent_synthesis.weighted_confidence * 100).toFixed(0)}%
-                      </span>
+        {/* Confidence Reasoning */}
+        <div className="glass-section p-3 rounded-lg bg-blue-50/30">
+          <h3 className="text-xs font-semibold text-gray-800 mb-1.5">Confidence Reasoning</h3>
+          <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.confidence.reasoning}</p>
+        </div>
+
+        {/* Final Verdict */}
+        <div className="glass-section p-3 rounded-lg border-l-4 border-blue-500">
+          <h3 className="text-xs font-semibold text-gray-800 mb-2">Final Verdict</h3>
+          <div className="space-y-2">
+            <div>
+              <div className="text-[10px] font-semibold text-gray-600 mb-0.5">Summary</div>
+              <p className="text-[11px] text-gray-800 leading-relaxed">{analysis.final_verdict.summary}</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
+              <div className="glass-section p-2 rounded">
+                <div className="text-[10px] text-gray-500 mb-0.5">Technical Says</div>
+                <p className="text-[11px] font-medium text-gray-800">{analysis.final_verdict.technical_says}</p>
+              </div>
+              <div className="glass-section p-2 rounded">
+                <div className="text-[10px] text-gray-500 mb-0.5">Sentiment Says</div>
+                <p className="text-[11px] font-medium text-gray-800">{analysis.final_verdict.sentiment_says}</p>
+              </div>
+              <div className="glass-section p-2 rounded">
+                <div className="text-[10px] text-gray-500 mb-0.5">Reflection Says</div>
+                <p className="text-[11px] font-medium text-gray-800">{analysis.final_verdict.reflection_says}</p>
+              </div>
+            </div>
+            <div className="pt-2 border-t border-gray-200">
+              <div className="text-[10px] font-semibold text-blue-700 mb-0.5">My Decision</div>
+              <p className="text-[11px] text-gray-800 leading-relaxed font-medium">{analysis.final_verdict.my_decision}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+          {/* LEFT COLUMN */}
+          <div className="space-y-4">
+
+            {/* Trade Setup */}
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-gray-800">Trade Setup</h3>
+              <div className="glass-section p-3 rounded-lg">
+                <div className="mb-3">
+                  <div className="text-[10px] text-gray-500 mb-1">Status</div>
+                  <div className={`text-xs font-bold ${
+                    analysis.trade_setup.status === 'READY_TO_ENTER' ? 'text-green-600' :
+                    analysis.trade_setup.status === 'WAIT_FOR_SETUP' ? 'text-amber-600' :
+                    analysis.trade_setup.status === 'EXIT_RECOMMENDED' ? 'text-red-600' :
+                    'text-gray-600'
+                  }`}>{analysis.trade_setup.status.replace(/_/g, ' ')}</div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  {analysis.trade_setup.entry_price > 0 && (
+                    <div className="glass-section p-2 rounded bg-green-50/50">
+                      <div className="text-[9px] text-gray-500 mb-0.5">Entry</div>
+                      <div className="text-xs font-bold text-green-700">${analysis.trade_setup.entry_price.toFixed(2)}</div>
                     </div>
                   )}
-                  <div className="space-y-2 mb-3">
-                    {analysis.agent_synthesis.technical_weight !== undefined && (
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-600">Technical Weight</span>
-                        <span className="font-semibold">{(analysis.agent_synthesis.technical_weight * 100).toFixed(0)}%</span>
-                      </div>
-                    )}
-                    {analysis.agent_synthesis.news_weight !== undefined && (
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-600">News Weight</span>
-                        <span className="font-semibold">{(analysis.agent_synthesis.news_weight * 100).toFixed(0)}%</span>
-                      </div>
-                    )}
-                    {analysis.agent_synthesis.reflection_weight !== undefined && (
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-600">Reflection Weight</span>
-                        <span className="font-semibold">{(analysis.agent_synthesis.reflection_weight * 100).toFixed(0)}%</span>
-                      </div>
-                    )}
+                  {analysis.trade_setup.stop_loss > 0 && (
+                    <div className="glass-section p-2 rounded bg-red-50/50">
+                      <div className="text-[9px] text-gray-500 mb-0.5">Stop Loss</div>
+                      <div className="text-xs font-bold text-red-700">${analysis.trade_setup.stop_loss.toFixed(2)}</div>
+                    </div>
+                  )}
+                  {analysis.trade_setup.take_profit > 0 && (
+                    <div className="glass-section p-2 rounded bg-blue-50/50">
+                      <div className="text-[9px] text-gray-500 mb-0.5">Target</div>
+                      <div className="text-xs font-bold text-blue-700">${analysis.trade_setup.take_profit.toFixed(2)}</div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5 text-[11px]">
+                  {analysis.trade_setup.risk_reward > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Risk/Reward</span>
+                      <span className={`font-semibold ${
+                        analysis.trade_setup.risk_reward >= 1.5 ? 'text-green-600' :
+                        analysis.trade_setup.risk_reward >= 1.0 ? 'text-amber-600' :
+                        'text-red-600'
+                      }`}>{analysis.trade_setup.risk_reward.toFixed(2)}:1</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Position Size</span>
+                    <span className="font-semibold text-gray-800">{analysis.trade_setup.position_size}</span>
                   </div>
-                  {analysis.agent_synthesis.agreement_summary && (
-                    <div className="pt-3 border-t border-gray-300/50">
-                      <p className="text-xs font-semibold text-gray-700 mb-1">Agreement Summary:</p>
-                      <p className="text-xs text-gray-700 leading-relaxed">
-                        {analysis.agent_synthesis.agreement_summary}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Agent Contributions */}
-            {analysis.agent_synthesis && (
-              analysis.agent_synthesis.technical_contribution ||
-              analysis.agent_synthesis.news_contribution ||
-              analysis.agent_synthesis.reflection_contribution
-            ) && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium tracking-wide">
-                  Agent Contributions
-                </h3>
-                <div className="glass-section p-4 rounded-xl space-y-3">
-                  {analysis.agent_synthesis.technical_contribution && (
-                    <div>
-                      <div className="text-xs font-semibold text-gray-700 mb-1">Technical Analyst:</div>
-                      <p className="text-xs text-gray-700 leading-relaxed">
-                        {analysis.agent_synthesis.technical_contribution}
-                      </p>
-                    </div>
-                  )}
-                  {analysis.agent_synthesis.news_contribution && (
-                    <div>
-                      <div className="text-xs font-semibold text-gray-700 mb-1">News Analyst:</div>
-                      <p className="text-xs text-gray-700 leading-relaxed">
-                        {analysis.agent_synthesis.news_contribution}
-                      </p>
-                    </div>
-                  )}
-                  {analysis.agent_synthesis.reflection_contribution && (
-                    <div>
-                      <div className="text-xs font-semibold text-gray-700 mb-1">Reflection Analyst:</div>
-                      <p className="text-xs text-gray-700 leading-relaxed">
-                        {analysis.agent_synthesis.reflection_contribution}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Execution Plan */}
-            {analysis.execution_plan && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium tracking-wide">
-                  Execution Plan
-                </h3>
-                <div className="glass-section p-4 rounded-xl">
-                  {analysis.execution_plan.position_size && (
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm">Position Size</span>
-                      <span className="text-sm font-semibold">{analysis.execution_plan.position_size}</span>
-                    </div>
-                  )}
-                  {analysis.execution_plan.timeframe && (
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm">Timeframe</span>
-                      <span className="text-sm font-semibold">{analysis.execution_plan.timeframe}</span>
-                    </div>
-                  )}
-                  {analysis.execution_plan.risk_reward_ratio && (
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm">Risk/Reward Ratio</span>
-                      <span className="text-sm font-semibold">{analysis.execution_plan.risk_reward_ratio}</span>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    {analysis.execution_plan.entry_price_target && (
-                      <div className="glass-section p-3 rounded-lg bg-green-50/50">
-                        <div className="text-xs text-gray-600 mb-1 text-center">Entry</div>
-                        <div className="text-sm font-semibold text-green-600 text-center">
-                          ${analysis.execution_plan.entry_price_target.toFixed(2)}
-                        </div>
-                      </div>
-                    )}
-                    {analysis.execution_plan.stop_loss && (
-                      <div className="glass-section p-3 rounded-lg bg-red-50/50">
-                        <div className="text-xs text-gray-600 mb-1 text-center">Stop Loss</div>
-                        <div className="text-sm font-semibold text-red-600 text-center">
-                          ${analysis.execution_plan.stop_loss.toFixed(2)}
-                        </div>
-                      </div>
-                    )}
-                    {analysis.execution_plan.take_profit && (
-                      <div className="glass-section p-3 rounded-lg bg-blue-50/50">
-                        <div className="text-xs text-gray-600 mb-1 text-center">Target</div>
-                        <div className="text-sm font-semibold text-blue-600 text-center">
-                          ${analysis.execution_plan.take_profit.toFixed(2)}
-                        </div>
-                      </div>
-                    )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Timeframe</span>
+                    <span className="font-semibold text-gray-800">{analysis.trade_setup.timeframe}</span>
                   </div>
-
-                  {analysis.execution_plan.entry_timing && (
-                    <div className="pt-3 border-t border-gray-300/50">
-                      <p className="text-xs font-semibold text-gray-700 mb-1">Entry Timing:</p>
-                      <p className="text-xs text-gray-700 leading-relaxed">
-                        {analysis.execution_plan.entry_timing}
-                      </p>
-                    </div>
-                  )}
                 </div>
+
+                {analysis.trade_setup.setup_explanation && (
+                  <div className="pt-2 mt-2 border-t border-gray-200">
+                    <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.trade_setup.setup_explanation}</p>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
+
+            {/* Action Plan */}
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-gray-800">Action Plan</h3>
+              <div className="glass-section p-3 rounded-lg space-y-2">
+                <div>
+                  <div className="text-[10px] font-semibold text-green-700 mb-1">For New Traders</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.action_plan.for_new_traders}</p>
+                </div>
+                <div className="pt-2 border-t border-gray-200">
+                  <div className="text-[10px] font-semibold text-blue-700 mb-1">For Current Holders</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.action_plan.for_current_holders}</p>
+                </div>
+                {analysis.action_plan.entry_conditions.length > 0 && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="text-[10px] font-semibold text-gray-700 mb-1">Entry Conditions</div>
+                    <div className="space-y-0.5">
+                      {analysis.action_plan.entry_conditions.map((cond, idx) => (
+                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                          <span className="text-green-500 mt-0.5">•</span>
+                          <span className="flex-1">{cond}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {analysis.action_plan.exit_conditions.length > 0 && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="text-[10px] font-semibold text-gray-700 mb-1">Exit Conditions</div>
+                    <div className="space-y-0.5">
+                      {analysis.action_plan.exit_conditions.map((cond, idx) => (
+                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                          <span className="text-red-500 mt-0.5">•</span>
+                          <span className="flex-1">{cond}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
 
           </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
+          {/* RIGHT COLUMN */}
+          <div className="space-y-4">
 
-            {/* Risk Management */}
-            {analysis.risk_management && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium tracking-wide">
-                  Risk Management
-                </h3>
-                <div className="glass-section p-4 rounded-xl">
-                  {analysis.risk_management.max_loss_per_trade && (
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm">Max Loss Per Trade</span>
-                      <span className="text-sm font-semibold text-red-600">
-                        {analysis.risk_management.max_loss_per_trade}
-                      </span>
-                    </div>
-                  )}
-                  {analysis.risk_management.primary_risk && (
-                    <div className="mb-3">
-                      <p className="text-xs font-semibold text-gray-700 mb-1">Primary Risk:</p>
-                      <p className="text-xs text-gray-700 leading-relaxed">
-                        {analysis.risk_management.primary_risk}
-                      </p>
-                    </div>
-                  )}
-                  {analysis.risk_management.secondary_risks && analysis.risk_management.secondary_risks.length > 0 && (
-                    <div>
-                      <p className="text-xs font-semibold text-gray-700 mb-1">Secondary Risks:</p>
-                      <ul className="space-y-1">
-                        {analysis.risk_management.secondary_risks.map((risk, idx) => (
-                          <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
-                            <span className="text-gray-500 mt-0.5">•</span>
-                            <span className="leading-relaxed">{risk}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Exit Conditions */}
-            {analysis.risk_management?.exit_conditions && analysis.risk_management.exit_conditions.length > 0 && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium tracking-wide">
-                  Exit Conditions
-                </h3>
-                <div className="glass-section p-4 rounded-xl">
-                  <ul className="space-y-2">
-                    {analysis.risk_management.exit_conditions.map((condition, idx) => (
-                      <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
-                        <span className="text-gray-500 mt-0.5">•</span>
-                        <span className="leading-relaxed">{condition}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {/* Monitoring Checklist */}
-            {analysis.risk_management?.monitoring_checklist && analysis.risk_management.monitoring_checklist.length > 0 && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium tracking-wide">
-                  Monitoring Checklist
-                </h3>
-                <div className="glass-section p-4 rounded-xl">
-                  <ul className="space-y-2">
-                    {analysis.risk_management.monitoring_checklist.map((item, idx) => (
-                      <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
-                        <span className="text-gray-500 mt-0.5">•</span>
-                        <span className="leading-relaxed">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {/* Final Reasoning */}
+            {/* What to Monitor */}
             <div className="space-y-1">
-              <h3 className="text-sm font-medium tracking-wide">
-                Final Stance
-              </h3>
-              <div className="glass-section p-4 rounded-xl">
-                <p className="text-sm text-gray-800 leading-relaxed">{analysis.reasoning}</p>
+              <h3 className="text-sm font-semibold text-gray-800">What to Monitor</h3>
+              <div className="glass-section p-3 rounded-lg space-y-2">
+                {analysis.what_to_monitor.critical_next_48h.length > 0 && (
+                  <div>
+                    <div className="text-[10px] font-semibold text-amber-700 mb-1">Critical Next 48h</div>
+                    <div className="space-y-0.5">
+                      {analysis.what_to_monitor.critical_next_48h.map((item, idx) => (
+                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                          <span className="text-amber-500 mt-0.5">•</span>
+                          <span className="flex-1">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {analysis.what_to_monitor.daily_checks.length > 0 && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="text-[10px] font-semibold text-blue-700 mb-1">Daily Checks</div>
+                    <div className="space-y-0.5">
+                      {analysis.what_to_monitor.daily_checks.map((item, idx) => (
+                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                          <span className="text-blue-500 mt-0.5">•</span>
+                          <span className="flex-1">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {analysis.what_to_monitor.exit_immediately_if.length > 0 && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="text-[10px] font-semibold text-red-700 mb-1">Exit Immediately If</div>
+                    <div className="space-y-0.5">
+                      {analysis.what_to_monitor.exit_immediately_if.map((item, idx) => (
+                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                          <span className="text-red-500 mt-0.5">•</span>
+                          <span className="flex-1">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Risk Assessment */}
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-gray-800">Risk Assessment</h3>
+              <div className="glass-section p-3 rounded-lg bg-red-50/30 space-y-2">
+                <div>
+                  <div className="text-[10px] font-semibold text-red-700 mb-1">Main Risk</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.risk_assessment.main_risk}</p>
+                </div>
+                <div className="pt-2 border-t border-red-200">
+                  <div className="text-[10px] font-semibold text-gray-700 mb-1">Why This Position Size</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.risk_assessment.why_this_position_size}</p>
+                </div>
+                {analysis.risk_assessment.what_kills_this_trade.length > 0 && (
+                  <div className="pt-2 border-t border-red-200">
+                    <div className="text-[10px] font-semibold text-red-700 mb-1">What Kills This Trade</div>
+                    <div className="space-y-0.5">
+                      {analysis.risk_assessment.what_kills_this_trade.map((item, idx) => (
+                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
+                          <span className="text-red-500 mt-0.5">•</span>
+                          <span className="flex-1">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
           </div>
         </div>
 
-
-        {/* Detailed Analysis (Collapsible) */}
+        {/* Chain-of-Thought */}
         {analysis.thinking && (
           <CollapsibleSection title="Chain-of-thought reasoning">
-            <div className="glass-section p-4 rounded-xl">
-              <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">
+            <div className="glass-section p-3 rounded-lg">
+              <pre className="text-[11px] text-gray-700 whitespace-pre-wrap leading-relaxed font-mono">
                 {analysis.thinking}
               </pre>
             </div>

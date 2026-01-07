@@ -200,7 +200,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
           </div>
           <div className="glass-section p-2 rounded-lg text-center">
             <div className="text-[10px] text-gray-500 mb-0.5">Confidence</div>
-            <div className="text-sm font-bold">{(analysis.confidence.analysis_confidence * 100).toFixed(0)}%</div>
+            <div className="text-sm font-bold">{(analysis.confidence.score * 100).toFixed(0)}%</div>
           </div>
         </div>
 

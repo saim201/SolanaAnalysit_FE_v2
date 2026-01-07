@@ -19,6 +19,7 @@ function App() {
   const [analysis, setAnalysis] = useState<TradeAnalysisResponse | null>(null);
   const [technicalData, setTechnicalData] = useState<TechnicalDataResponse | null>(null);
   const [tickerData, setTickerData] = useState<TickerResponse | null>(null);
+  const [analysisCompletionTimestamp, setAnalysisCompletionTimestamp] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +68,10 @@ function App() {
         setAnalysis(latestAnalysis);
         setTechnicalData(techData);
         setTickerData(ticker);
+        // Use the analysis timestamp as the completion timestamp
+        if (latestAnalysis?.timestamp) {
+          setAnalysisCompletionTimestamp(latestAnalysis.timestamp);
+        }
       } catch {
         console.log('No previous analysis found, start fresh');
       } finally {
@@ -125,6 +130,11 @@ function App() {
             return s;
           })
         );
+
+        // Capture timestamp when analysis is complete
+        if (step === 'complete' && status === 'completed' && message === 'Analysis complete') {
+          setAnalysisCompletionTimestamp(new Date().toISOString());
+        }
       });
 
       setAnalysis(analysisData);
@@ -257,6 +267,7 @@ function App() {
                 analysis={analysis}
                 technicalData={technicalData}
                 tickerData={tickerData}
+                analysisCompletionTimestamp={analysisCompletionTimestamp}
                 loading={loading}
                 onRunAnalysis={handleAnalyse}
               />

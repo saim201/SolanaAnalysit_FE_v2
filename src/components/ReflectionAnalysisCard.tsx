@@ -33,18 +33,18 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
             }`}>{analysis.recommendation_signal}</div>
           </div>
           <div className="glass-section p-2 rounded-lg text-center">
-            <div className="text-[10px] text-gray-500 mb-0.5">Analysis Conf.</div>
-            <div className="text-sm font-bold text-blue-600">{(analysis.confidence.analysis_confidence * 100).toFixed(0)}%</div>
+            <div className="text-[10px] text-gray-500 mb-0.5">Confidence</div>
+            <div className="text-sm font-bold text-blue-600">{(analysis.confidence.score * 100).toFixed(0)}%</div>
           </div>
           <div className="glass-section p-2 rounded-lg text-center">
-            <div className="text-[10px] text-gray-500 mb-0.5">Final Conf.</div>
-            <div className="text-sm font-bold text-purple-600">{(analysis.confidence.final_confidence * 100).toFixed(0)}%</div>
+            <div className="text-[10px] text-gray-500 mb-0.5">Alignment Score</div>
+            <div className="text-sm font-bold text-purple-600">{(analysis.agent_alignment.alignment_score * 100).toFixed(0)}%</div>
           </div>
         </div>
 
-        {/* Confidence Interpretation */}
+        {/* Confidence Reasoning */}
         <div className="glass-section p-2.5 rounded-lg bg-gray-50/50">
-          <p className="text-[11px] text-gray-700 leading-relaxed italic">{analysis.confidence.interpretation}</p>
+          <p className="text-[11px] text-gray-700 leading-relaxed italic">{analysis.confidence.reasoning}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -54,9 +54,20 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
 
             {/* Agreement Analysis */}
             <div className="space-y-1">
-              <h3 className="text-xs font-semibold tracking-wide text-gray-800">Agreement Synthesis</h3>
-              <div className="glass-section p-2.5 rounded-lg">
-                <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.agreement_analysis.synthesis}</p>
+              <h3 className="text-xs font-semibold tracking-wide text-gray-800">Agent Alignment</h3>
+              <div className="glass-section p-2.5 rounded-lg space-y-2">
+                <div>
+                  <div className="text-[10px] font-semibold text-blue-700 mb-0.5">Technical Says</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.agent_alignment.technical_says}</p>
+                </div>
+                <div className="pt-1 border-t border-gray-200">
+                  <div className="text-[10px] font-semibold text-purple-700 mb-0.5">Sentiment Says</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.agent_alignment.sentiment_says}</p>
+                </div>
+                <div className="pt-1 border-t border-gray-200">
+                  <div className="text-[10px] font-semibold text-gray-700 mb-0.5">Synthesis</div>
+                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.agent_alignment.synthesis}</p>
+                </div>
               </div>
             </div>
 
@@ -64,31 +75,17 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
             <div className="space-y-1">
               <h3 className="text-xs font-semibold tracking-wide text-gray-800">Blind Spots</h3>
               <div className="glass-section p-2.5 rounded-lg space-y-2">
-                {analysis.blind_spots.technical_missed.length > 0 && (
+                {analysis.blind_spots.technical_missed && (
                   <div>
                     <div className="text-[11px] font-semibold text-blue-700 mb-1">Technical Missed</div>
-                    <div className="space-y-0.5">
-                      {analysis.blind_spots.technical_missed.map((spot, idx) => (
-                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
-                          <span className="text-blue-500 mt-0.5">•</span>
-                          <span className="flex-1">{spot}</span>
-                        </div>
-                      ))}
-                    </div>
+                    <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.blind_spots.technical_missed}</p>
                   </div>
                 )}
 
-                {analysis.blind_spots.sentiment_missed.length > 0 && (
+                {analysis.blind_spots.sentiment_missed && (
                   <div className="pt-2 border-t border-gray-200">
                     <div className="text-[11px] font-semibold text-purple-700 mb-1">Sentiment Missed</div>
-                    <div className="space-y-0.5">
-                      {analysis.blind_spots.sentiment_missed.map((spot, idx) => (
-                        <div key={idx} className="text-[11px] text-gray-700 flex items-start gap-1">
-                          <span className="text-purple-500 mt-0.5">•</span>
-                          <span className="flex-1">{spot}</span>
-                        </div>
-                      ))}
-                    </div>
+                    <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.blind_spots.sentiment_missed}</p>
                   </div>
                 )}
 
@@ -101,10 +98,9 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
 
             {/* Risk Assessment */}
             <div className="space-y-1">
-              <h3 className="text-xs font-semibold tracking-wide text-gray-800">Risk Assessment</h3>
+              <h3 className="text-xs font-semibold tracking-wide text-gray-800">Primary Risk</h3>
               <div className="glass-section p-2.5 rounded-lg bg-red-50/50">
-                <div className="text-[11px] font-semibold text-red-700 mb-1">Primary Risk</div>
-                <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.risk_assessment.primary_risk}</p>
+                <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.primary_risk}</p>
               </div>
             </div>
 
@@ -160,9 +156,34 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
             <div className="space-y-1">
               <h3 className="text-xs font-semibold tracking-wide text-gray-800">Final Synthesis</h3>
               <div className="glass-section p-2.5 rounded-lg border-l-4 border-purple-500">
-                <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.reasoning}</p>
+                <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.final_reasoning}</p>
               </div>
             </div>
+
+            {/* Calculated Metrics */}
+            {analysis.calculated_metrics && (
+              <div className="space-y-1">
+                <h3 className="text-xs font-semibold tracking-wide text-gray-800">Calculated Metrics</h3>
+                <div className="glass-section p-2.5 rounded-lg space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-gray-500">Bayesian Confidence</span>
+                    <span className="text-[11px] font-semibold">{(analysis.calculated_metrics.bayesian_confidence * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-gray-500">Risk Level</span>
+                    <span className={`text-[11px] font-semibold ${
+                      analysis.calculated_metrics.risk_level === 'HIGH' ? 'text-red-600' :
+                      analysis.calculated_metrics.risk_level === 'MEDIUM' ? 'text-amber-600' :
+                      'text-green-600'
+                    }`}>{analysis.calculated_metrics.risk_level}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-gray-500">Confidence Deviation</span>
+                    <span className="text-[11px] font-semibold">{analysis.calculated_metrics.confidence_deviation.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
