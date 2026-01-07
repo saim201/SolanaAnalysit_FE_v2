@@ -38,6 +38,28 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
       onToggle={onToggle}
     >
       <div className="space-y-6">
+
+        {/* Market Overview Strip */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Recommendation</div>
+            <div className={`text-sm font-bold ${
+              analysis.recommendation_signal === 'BUY' ? 'text-green-600' :
+              analysis.recommendation_signal === 'SELL' ? 'text-red-600' :
+              analysis.recommendation_signal === 'WAIT' ? 'text-amber-600' :
+              'text-gray-600'
+            }`}>{analysis.recommendation_signal}</div>
+          </div>
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Market Condition</div>
+            <div className={`text-xs font-semibold ${getSignalColor(analysis.signal)}`}>{analysis.signal.replace(/_/g, ' ')}</div>
+          </div>
+          <div className="glass-section p-2 rounded-lg text-center">
+            <div className="text-[10px] text-gray-500 mb-0.5">Confidence</div>
+            <div className="text-sm font-bold">{(analysis.confidence.analysis_confidence * 100).toFixed(0)}%</div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-6">
 
           {/* Left Column */}

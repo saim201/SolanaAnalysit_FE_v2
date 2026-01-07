@@ -2,7 +2,7 @@
 
 export interface TechnicalAnalysis {
   timestamp?: string;
-  recommendation: "BUY" | "SELL" | "HOLD" | "WAIT";
+  recommendation_signal: "BUY" | "SELL" | "HOLD" | "WAIT";
   confidence: {
     analysis_confidence: number;
     setup_quality: number;
@@ -66,6 +66,7 @@ export interface TechnicalAnalysis {
 // New SentimentAnalysis interface (combines CFGI + News)
 export interface SentimentAnalysis {
   timestamp?: string;
+  recommendation_signal: "BUY" | "SELL" | "HOLD" | "WAIT";
   signal: string;  // SLIGHTLY_BULLISH, BULLISH, BEARISH, NEUTRAL, etc.
   confidence: {
     analysis_confidence: number;
@@ -110,7 +111,7 @@ export interface SentimentAnalysis {
 
 export interface ReflectionAnalysis {
   timestamp?: string;
-  recommendation: "BUY" | "SELL" | "HOLD" | "WAIT";
+  recommendation_signal: "BUY" | "SELL" | "HOLD" | "WAIT";
   confidence: {
     analysis_confidence: number;
     final_confidence: number;

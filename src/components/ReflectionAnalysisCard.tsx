@@ -26,11 +26,11 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
           <div className="glass-section p-2 rounded-lg text-center">
             <div className="text-[10px] text-gray-500 mb-0.5">Recommendation</div>
             <div className={`text-sm font-bold ${
-              analysis.recommendation === 'BUY' ? 'text-green-600' :
-              analysis.recommendation === 'SELL' ? 'text-red-600' :
-              analysis.recommendation === 'WAIT' ? 'text-amber-600' :
+              analysis.recommendation_signal === 'BUY' ? 'text-green-600' :
+              analysis.recommendation_signal === 'SELL' ? 'text-red-600' :
+              analysis.recommendation_signal === 'WAIT' ? 'text-amber-600' :
               'text-gray-600'
-            }`}>{analysis.recommendation}</div>
+            }`}>{analysis.recommendation_signal}</div>
           </div>
           <div className="glass-section p-2 rounded-lg text-center">
             <div className="text-[10px] text-gray-500 mb-0.5">Analysis Conf.</div>
