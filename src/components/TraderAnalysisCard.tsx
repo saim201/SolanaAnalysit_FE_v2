@@ -158,7 +158,7 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
                   <div className="text-[10px] font-semibold text-blue-700 mb-1">For Current Holders</div>
                   <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.action_plan.for_current_holders}</p>
                 </div>
-                {analysis.action_plan.entry_conditions.length > 0 && (
+                {analysis.action_plan?.entry_conditions && analysis.action_plan.entry_conditions.length > 0 && (
                   <div className="pt-2 border-t border-gray-200">
                     <div className="text-[10px] font-semibold text-gray-700 mb-1">Entry Conditions</div>
                     <div className="space-y-0.5">
@@ -171,7 +171,7 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
                     </div>
                   </div>
                 )}
-                {analysis.action_plan.exit_conditions.length > 0 && (
+                {analysis.action_plan?.exit_conditions && analysis.action_plan.exit_conditions.length > 0 && (
                   <div className="pt-2 border-t border-gray-200">
                     <div className="text-[10px] font-semibold text-gray-700 mb-1">Exit Conditions</div>
                     <div className="space-y-0.5">
@@ -196,7 +196,7 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
             <div className="space-y-1">
               <h3 className="text-sm font-semibold text-gray-800">What to Monitor</h3>
               <div className="glass-section p-3 rounded-lg space-y-2">
-                {analysis.what_to_monitor.critical_next_48h.length > 0 && (
+                {analysis.what_to_monitor?.critical_next_48h && analysis.what_to_monitor.critical_next_48h.length > 0 && (
                   <div>
                     <div className="text-[10px] font-semibold text-amber-700 mb-1">Critical Next 48h</div>
                     <div className="space-y-0.5">
@@ -209,7 +209,7 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
                     </div>
                   </div>
                 )}
-                {analysis.what_to_monitor.daily_checks.length > 0 && (
+                {analysis.what_to_monitor?.daily_checks && analysis.what_to_monitor.daily_checks.length > 0 && (
                   <div className="pt-2 border-t border-gray-200">
                     <div className="text-[10px] font-semibold text-blue-700 mb-1">Daily Checks</div>
                     <div className="space-y-0.5">
@@ -222,7 +222,7 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
                     </div>
                   </div>
                 )}
-                {analysis.what_to_monitor.exit_immediately_if.length > 0 && (
+                {analysis.what_to_monitor?.exit_immediately_if && analysis.what_to_monitor.exit_immediately_if.length > 0 && (
                   <div className="pt-2 border-t border-gray-200">
                     <div className="text-[10px] font-semibold text-red-700 mb-1">Exit Immediately If</div>
                     <div className="space-y-0.5">
@@ -250,7 +250,7 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
                   <div className="text-[10px] font-semibold text-gray-700 mb-1">Why This Position Size</div>
                   <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.risk_assessment.why_this_position_size}</p>
                 </div>
-                {analysis.risk_assessment.what_kills_this_trade.length > 0 && (
+                {analysis.risk_assessment?.what_kills_this_trade && analysis.risk_assessment.what_kills_this_trade.length > 0 && (
                   <div className="pt-2 border-t border-red-200">
                     <div className="text-[10px] font-semibold text-red-700 mb-1">What Kills This Trade</div>
                     <div className="space-y-0.5">

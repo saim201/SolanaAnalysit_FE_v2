@@ -125,7 +125,7 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
             </div>
 
             {/* Invalidation Triggers */}
-            {analysis.monitoring.invalidation_triggers.length > 0 && (
+            {analysis.monitoring?.invalidation_triggers && analysis.monitoring.invalidation_triggers.length > 0 && (
               <div className="space-y-1">
                 <div className="flex items-center gap-1">
                   <h3 className="text-xs font-semibold tracking-wide text-gray-800">Invalidation Triggers</h3>

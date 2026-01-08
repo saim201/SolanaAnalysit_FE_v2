@@ -399,7 +399,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
             <div className="space-y-1">
               <h3 className="text-sm font-semibold tracking-wide text-gray-800">Look for</h3>
               <div className="glass-section p-2.5 rounded-lg space-y-2">
-                {analysis.watch_list.bullish_signals.length > 0 && (
+                {analysis.watch_list?.bullish_signals && analysis.watch_list.bullish_signals.length > 0 && (
                   <div>
                     <div className="text-[11px] font-semibold text-green-700 mb-1">Bullish Signals</div>
                     <div className="space-y-0.5">
@@ -413,7 +413,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
                   </div>
                 )}
 
-                {analysis.watch_list.bearish_signals.length > 0 && (
+                {analysis.watch_list?.bearish_signals && analysis.watch_list.bearish_signals.length > 0 && (
                   <div className="pt-2 border-t border-gray-200">
                     <div className="text-[11px] font-semibold text-red-700 mb-1">Bearish Signals</div>
                     <div className="space-y-0.5">
@@ -430,7 +430,7 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
             </div>
 
             {/* Invalidation Triggers */}
-            {analysis.invalidation.length > 0 && (
+            {analysis.invalidation && analysis.invalidation.length > 0 && (
               <div className="space-y-1">
                 <div className="flex items-center gap-1">
                   <h3 className="text-sm font-semibold tracking-wide text-gray-800">Invalidation Triggers</h3>
