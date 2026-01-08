@@ -290,35 +290,41 @@ export default function TechnicalAnalysisCard({ analysis, technicalData, isExpan
             <div className="space-y-1">
               <h3 className="text-sm font-semibold tracking-wide text-gray-800">Analysis Breakdown</h3>
               <div className="glass-section p-2.5 rounded-lg space-y-2">
-                <div>
-                  <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
-                    <span>Trend</span>
-                    <span className="text-[10px] font-normal text-gray-500">
-                      {analysis.analysis.trend.direction} • {analysis.analysis.trend.strength}
-                    </span>
+                {analysis.analysis?.trend && (
+                  <div>
+                    <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
+                      <span>Trend</span>
+                      <span className="text-[10px] font-normal text-gray-500">
+                        {analysis.analysis.trend.direction} • {analysis.analysis.trend.strength}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.trend.detail}</p>
                   </div>
-                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.trend.detail}</p>
-                </div>
+                )}
 
-                <div className="pt-2 border-t border-gray-200">
-                  <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
-                    <span>Momentum</span>
-                    <span className="text-[10px] font-normal text-gray-500">
-                      {analysis.analysis.momentum.direction} • {analysis.analysis.momentum.strength}
-                    </span>
+                {analysis.analysis?.momentum && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
+                      <span>Momentum</span>
+                      <span className="text-[10px] font-normal text-gray-500">
+                        {analysis.analysis.momentum.direction} • {analysis.analysis.momentum.strength}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.momentum.detail}</p>
                   </div>
-                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.momentum.detail}</p>
-                </div>
+                )}
 
-                <div className="pt-2 border-t border-gray-200">
-                  <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
-                    <span>Volume</span>
-                    <span className="text-[10px] font-normal text-gray-500">
-                      {analysis.analysis.volume.quality} • {analysis.analysis.volume.ratio.toFixed(2)}x
-                    </span>
+                {analysis.analysis?.volume && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="text-[11px] font-semibold text-gray-900 mb-0.5 flex items-center gap-1.5">
+                      <span>Volume</span>
+                      <span className="text-[10px] font-normal text-gray-500">
+                        {analysis.analysis.volume.quality} • {analysis.analysis.volume.ratio.toFixed(2)}x
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.volume.detail}</p>
                   </div>
-                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.analysis.volume.detail}</p>
-                </div>
+                )}
               </div>
             </div>
 
