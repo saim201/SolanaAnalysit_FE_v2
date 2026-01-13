@@ -384,38 +384,17 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
 
 
 
-            {/* Analyst verdict */}
-            <div className="space-y-1">
-              <h3 className="text-sm font-semibold text-gray-900">
-                Analyst verdict
-              </h3>
-              <div className="glass-section p-5 rounded-xl">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <div className="text-xs text-gray-600 mb-1">Market Direction</div>
-                    <div className={`text-sm font-bold ${getSignalColor(analysis.market_condition)}`}>
-                      {analysis.market_condition.replace(/_/g, ' ')}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 pt-4">
-                    <div className='text-sm text-gray-500'>Confidence:</div>
-                    <div className="text-sm font-bold">
-                      {(analysis.confidence.score * 100).toFixed(0)}%
-                    </div>
-                  </div>
+            {/* Suggested Timeframe */}
+            {analysis.suggested_timeframe && (
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold text-gray-900">
+                  Suggested Timeframe
+                </h3>
+                <div className="glass-section p-4 rounded-xl">
+                  <p className="text-xs text-gray-900 leading-relaxed">{analysis.suggested_timeframe}</p>
                 </div>
-
-                {/* Suggested Timeframe */}
-                {analysis.suggested_timeframe && (
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">Suggested Timeframe</span>
-                      <span className="text-sm font-bold text-gray-900">{analysis.suggested_timeframe}</span>
-                    </div>
-                  </div>
-                )}
               </div>
-            </div>
+            )}
 
 
             {/* Summary */}
@@ -425,7 +404,7 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
                   Confidence Reasoning
                 </h3>
                 <div className="glass-section p-4 rounded-xl">
-                  <p className="text-sm leading-relaxed">{analysis.confidence.reasoning}</p>
+                  <p className="text-xs leading-relaxed">{analysis.confidence.reasoning}</p>
                 </div>
               </div>
             )}

@@ -44,8 +44,7 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
 
         {/* Confidence Reasoning */}
         <div className="glass-section p-3 rounded-lg bg-blue-50/30">
-          <h3 className="text-xs font-semibold text-gray-800 mb-1.5">Confidence Reasoning</h3>
-          <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.confidence.reasoning}</p>
+          <p className="text-[11px] text-gray-700 leading-relaxed italic">{analysis.confidence.reasoning}</p>
         </div>
 
         {/* Final Verdict */}
@@ -53,7 +52,6 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
           <h3 className="text-xs font-semibold text-gray-800 mb-2">Final Verdict</h3>
           <div className="space-y-2">
             <div>
-              <div className="text-[10px] font-semibold text-gray-600 mb-0.5">Summary</div>
               <p className="text-[11px] text-gray-800 leading-relaxed">{analysis.final_verdict.summary}</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">

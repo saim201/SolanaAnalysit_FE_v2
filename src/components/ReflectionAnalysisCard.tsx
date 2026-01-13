@@ -56,13 +56,15 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
             <div className="space-y-1">
               <h3 className="text-xs font-semibold tracking-wide text-gray-800">Agent Alignment</h3>
               <div className="glass-section p-2.5 rounded-lg space-y-2">
-                <div>
-                  <div className="text-[10px] font-semibold text-blue-700 mb-0.5">Technical Says</div>
-                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.agent_alignment.technical_says}</p>
-                </div>
-                <div className="pt-1 border-t border-gray-200">
-                  <div className="text-[10px] font-semibold text-purple-700 mb-0.5">Sentiment Says</div>
-                  <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.agent_alignment.sentiment_says}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <div className="text-[10px] font-semibold text-blue-700 mb-0.5">Technical Says</div>
+                    <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.agent_alignment.technical_says}</p>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-semibold text-purple-700 mb-0.5">Sentiment Says</div>
+                    <p className="text-[11px] text-gray-700 leading-relaxed">{analysis.agent_alignment.sentiment_says}</p>
+                  </div>
                 </div>
                 <div className="pt-1 border-t border-gray-200">
                   <div className="text-[10px] font-semibold text-gray-700 mb-0.5">Synthesis</div>
