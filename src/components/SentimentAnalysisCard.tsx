@@ -147,7 +147,7 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
                                 />
                               </svg>
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xs font-bold text-gray-900">{analysis.market_fear_greed.social.toFixed(0)}</span>
+                                <span className="text-xs font-bold text-gray-900">{analysis.market_fear_greed.social.toFixed(0)}%</span>
                               </div>
                             </div>
                             <span className="text-xs text-gray-600 font-medium">Social</span>
@@ -180,7 +180,7 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
                                 />
                               </svg>
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xs font-bold text-gray-900">{analysis.market_fear_greed.whales.toFixed(0)}</span>
+                                <span className="text-xs font-bold text-gray-900">{analysis.market_fear_greed.whales.toFixed(0)}%</span>
                               </div>
                             </div>
                             <span className="text-xs text-gray-600 font-medium">Whales</span>
@@ -213,7 +213,7 @@ export default function SentimentAnalysisCard({ analysis, isExpanded, onToggle, 
                                 />
                               </svg>
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xs font-bold text-gray-900">{analysis.market_fear_greed.trends.toFixed(0)}</span>
+                                <span className="text-xs font-bold text-gray-900">{analysis.market_fear_greed.trends.toFixed(0)}%</span>
                               </div>
                             </div>
                             <span className="text-xs text-gray-600 font-medium">Trends</span>
