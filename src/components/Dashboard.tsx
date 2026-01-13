@@ -1,7 +1,6 @@
-import type { TradeAnalysisResponse, TechnicalDataResponse, TickerResponse } from '../types';
+import type { TechnicalDataResponse, TickerResponse } from '../types';
 
 interface TradingDashboardProps {
-  analysis: TradeAnalysisResponse;
   technicalData?: TechnicalDataResponse | null;
   tickerData?: TickerResponse | null;
   analysisCompletionTimestamp?: string | null;
@@ -9,28 +8,10 @@ interface TradingDashboardProps {
   onRunAnalysis: () => void;
 }
 
-export default function Dashboard({ analysis, technicalData, tickerData, analysisCompletionTimestamp, loading, onRunAnalysis }: TradingDashboardProps) {
+export default function Dashboard({ technicalData, tickerData, analysisCompletionTimestamp, loading, onRunAnalysis }: TradingDashboardProps) {
   const getTimeSinceUpdate = () => {
-    // Use analysis completion timestamp from analysis_progress table
-    if (!analysisCompletionTimestamp) {
-      // Fallback to analysis timestamp
-      if (!analysis?.timestamp) return '—';
-      const now = new Date();
-      const updateTime = new Date(analysis.timestamp);
-      const diffMs = now.getTime() - updateTime.getTime();
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMins / 60);
+    if (!analysisCompletionTimestamp) return '—';
 
-      if (diffHours > 0) {
-        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-      } else if (diffMins > 0) {
-        return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
-      } else {
-        return 'just now';
-      }
-    }
-
-    // Use analysis completion timestamp for accurate display
     const now = new Date();
     const completionTime = new Date(analysisCompletionTimestamp);
     const diffMs = now.getTime() - completionTime.getTime();
@@ -52,18 +33,16 @@ export default function Dashboard({ analysis, technicalData, tickerData, analysi
   };
 
   const getStatusInfo = (): { status: string; color: string; animate: boolean } => {
-    // Use ticker timestamp to determine if data is live
-    if (!tickerData?.timestamp) {
+    if (!analysisCompletionTimestamp) {
       return { status: 'Idle', color: 'bg-gray-400', animate: false };
     }
 
     const now = new Date();
-    const tickerTime = new Date(tickerData.timestamp);
-    const diffMs = now.getTime() - tickerTime.getTime();
+    const completionTime = new Date(analysisCompletionTimestamp);
+    const diffMs = now.getTime() - completionTime.getTime();
     const diffMins = Math.floor(diffMs / 60000);
 
-    // Live if updated within last 3 minutes
-    if (diffMins < 3) {
+    if (diffMins <= 3) {
       return { status: 'Live', color: 'bg-green-500', animate: true };
     } else {
       return { status: 'Idle', color: 'bg-gray-400', animate: false };
@@ -74,34 +53,36 @@ export default function Dashboard({ analysis, technicalData, tickerData, analysi
 
   return (
     <div className="space-y-4">
-      {/* Hero Section */}
-      <div className="glass-card rounded-xl p-8 sm:p-12 text-center">
-        <p className="text-gray-600 text-sm mb-6 leading-relaxed max-w-3xl mx-auto">
-          This system doesn't auto-analyse currently. Click the button below to run the analysis and get the latest results based on current market data.
-        </p>
-        <button
-          onClick={onRunAnalysis}
-          disabled={loading}
-          className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gray-900 hover:bg-black text-white text-base font-semibold rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-lg"
-        >
-          {loading ? (
-            <>
-              <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span>Analysing...</span>
-            </>
-          ) : (
-            <>
-              <span className='cursor-pointer'>Run Analysis </span>
-            </>
-          )}
-        </button>
-        <p className="text-sm text-gray-500 mt-4">
-          Last analysis completed {getTimeSinceUpdate()}
-        </p>
-      </div>
+      {/* Hero Section - Only show when status is Idle */}
+      {statusInfo.status === 'Idle' && (
+        <div className="glass-card rounded-xl p-8 sm:p-12 text-center">
+          <p className="text-gray-600 text-sm mb-6 leading-relaxed max-w-3xl mx-auto">
+            This system doesn't auto-analyse currently. Click the button below to run the analysis and get the latest results based on current market data.
+          </p>
+          <button
+            onClick={onRunAnalysis}
+            disabled={loading}
+            className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gray-900 hover:bg-black text-white text-base font-semibold rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-lg"
+          >
+            {loading ? (
+              <>
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Analysing...</span>
+              </>
+            ) : (
+              <>
+                <span className='cursor-pointer'>Run Analysis </span>
+              </>
+            )}
+          </button>
+          <p className="text-sm text-gray-500 mt-4">
+            Last analysis completed {getTimeSinceUpdate()}
+          </p>
+        </div>
+      )}
 
       {/* Status Bar */}
       <div className="glass-card rounded-xl p-5">
@@ -115,18 +96,16 @@ export default function Dashboard({ analysis, technicalData, tickerData, analysi
             </div>
           </div>
 
-          {/* Divider */}
           <div className="hidden sm:block w-px h-6 bg-gray-300 mx-6"></div>
 
           {/* Last Updated */}
           <div className="flex items-center justify-center gap-2 flex-1 w-full sm:w-auto">
             <span className="text-sm text-gray-600">Last Updated:</span>
             <span className="font-semibold text-gray-900">
-              {analysis?.timestamp ? getTimeSinceUpdate() : '—'}
+              {getTimeSinceUpdate()}
             </span>
           </div>
 
-          {/* Divider */}
           <div className="hidden sm:block w-px h-6 bg-gray-300 mx-6"></div>
 
           {/* SOL/USDT */}
@@ -148,7 +127,6 @@ export default function Dashboard({ analysis, technicalData, tickerData, analysi
             </div>
           </div>
 
-          {/* Divider */}
           <div className="hidden sm:block w-px h-6 bg-gray-300 mx-6"></div>
 
           {/* 24h Volume */}

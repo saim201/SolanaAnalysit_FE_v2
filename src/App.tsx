@@ -59,17 +59,21 @@ function App() {
     const fetchLatestAnalysis = async () => {
       setInitialLoading(true);
       try {
-        const [latestAnalysis, techData, ticker] = await Promise.all([
+        const [latestAnalysis, techData, ticker, completionData] = await Promise.all([
           api.getLatestAnalysis(),
           api.getTechnicalData(),
-          api.getTicker()
+          api.getTicker(),
+          api.getAnalysisCompletionTimestamp()
         ]);
 
         setAnalysis(latestAnalysis);
         setTechnicalData(techData);
         setTickerData(ticker);
-        // Use the analysis timestamp as the completion timestamp
-        if (latestAnalysis?.timestamp) {
+        // Use the completion timestamp from analysis_progress table
+        if (completionData?.timestamp) {
+          setAnalysisCompletionTimestamp(completionData.timestamp);
+        } else if (latestAnalysis?.timestamp) {
+          // Fallback to analysis timestamp if no completion data
           setAnalysisCompletionTimestamp(latestAnalysis.timestamp);
         }
       } catch {
@@ -130,21 +134,22 @@ function App() {
             return s;
           })
         );
-
-        // Capture timestamp when analysis is complete
-        if (step === 'complete' && status === 'completed' && message === 'Analysis complete') {
-          setAnalysisCompletionTimestamp(new Date().toISOString());
-        }
       });
 
       setAnalysis(analysisData);
 
-      const [techData, ticker] = await Promise.all([
+      const [techData, ticker, completionData] = await Promise.all([
         api.getTechnicalData(),
-        api.getTicker()
+        api.getTicker(),
+        api.getAnalysisCompletionTimestamp()
       ]);
       setTechnicalData(techData);
       setTickerData(ticker);
+
+      // Update completion timestamp from analysis_progress table
+      if (completionData?.timestamp) {
+        setAnalysisCompletionTimestamp(completionData.timestamp);
+      }
 
       ReactGA.event({
         category: 'Analysis',
@@ -264,7 +269,6 @@ function App() {
             {/* Hero Section and Status Bar */}
             <div className="mb-6 sm:mb-8">
               <Dashboard
-                analysis={analysis}
                 technicalData={technicalData}
                 tickerData={tickerData}
                 analysisCompletionTimestamp={analysisCompletionTimestamp}

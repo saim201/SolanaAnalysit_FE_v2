@@ -84,6 +84,29 @@ export const api = {
     }
   },
 
+  async getAnalysisCompletionTimestamp(): Promise<{ timestamp: string; job_id: string } | null> {
+    console.log('Fetching analysis completion timestamp from API');
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/sol/analyse/completion-timestamp`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          // No completed analysis found yet
+          return null;
+        }
+        throw new Error(`Completion timestamp fetch failed: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Completion timestamp error:', error);
+      return null;
+    }
+  },
+
   
   /**
    * Run analysis with real-time progress updates (PostgreSQL-backed, Lambda compatible)
@@ -93,7 +116,6 @@ export const api = {
   async streamAnalysis(
     onProgress: (step: string, status: string, message: string) => void
   ): Promise<TradeAnalysisResponse> {
-    // Generate a unique job ID for this analysis run
     const job_id = `job_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
     // Start polling for progress immediately
@@ -184,7 +206,6 @@ export const api = {
         }
         return response.json();
       }),
-      // Poll for progress updates
       pollProgress()
     ]);
 
