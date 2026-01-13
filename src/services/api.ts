@@ -99,7 +99,7 @@ export const api = {
     // Start polling for progress immediately
     const seenSteps = new Set<string>();
     let pollCount = 0;
-    const maxPolls = 180; // 3 minutes with 1s intervals
+    const maxPolls = 600; // 10 minutes with 1s intervals
     let consecutiveErrors = 0;
     const maxConsecutiveErrors = 5; // Stop after 5 consecutive errors
 
