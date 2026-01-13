@@ -103,6 +103,7 @@ export default function AnalysisTabs({ analysis, technicalData }: AnalysisTabsPr
             analysis={analysis.trader_analysis}
             isExpanded={true}
             onToggle={undefined}
+            timestamp={analysis.timestamp}
           />
         )}
 

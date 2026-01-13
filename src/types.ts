@@ -116,8 +116,6 @@ export interface SentimentAnalysis {
   market_fear_greed: MarketFearGreed;
   news_sentiment: NewsSentiment;
   combined_sentiment: CombinedSentiment;
-  positive_catalysts: number;
-  negative_risks: number;
   key_events: KeyEvent[];
   risk_flags: string[];
   what_to_watch: string[];
