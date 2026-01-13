@@ -161,7 +161,7 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
             </div>
 
             {/* Calculated Metrics */}
-            {analysis.calculated_metrics && (
+            {/* {analysis.calculated_metrics && (
               <div className="space-y-1">
                 <h3 className="text-xs font-semibold tracking-wide text-gray-800">Calculated Metrics</h3>
                 <div className="glass-section p-2.5 rounded-lg space-y-1.5">
@@ -183,7 +183,7 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
 
           </div>
         </div>
