@@ -169,7 +169,6 @@ export interface ReflectionAnalysis {
 // TRADER ANALYSIS
 // ============================================================================
 export interface FinalVerdict {
-  summary: string;
   technical_says: string;
   sentiment_says: string;
   reflection_says: string;

@@ -51,9 +51,6 @@ export default function TraderAnalysisCard({ analysis, isExpanded, onToggle, tim
         <div className="glass-section p-3 rounded-lg border-l-4 border-blue-500">
           <h3 className="text-xs font-semibold text-gray-800 mb-2">Final Verdict</h3>
           <div className="space-y-2">
-            <div>
-              <p className="text-[11px] text-gray-800 leading-relaxed">{analysis.final_verdict.summary}</p>
-            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
               <div className="glass-section p-2 rounded">
                 <div className="text-[10px] text-gray-500 mb-0.5">Technical Says</div>
