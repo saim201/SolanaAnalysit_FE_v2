@@ -6,7 +6,7 @@ import Dashboard from './components/Dashboard';
 import ProjectHighlightsModal from './components/ProjectHighlightsModal';
 import LoadingScreen from './components/LoadingScreen';
 import AnalysisProgressModal from './components/AnalysisProgressModal';
-import ReactGA from 'react-ga4';
+import analytics from './services/analytics';
 
 interface ProgressStep {
   id: string;
@@ -36,25 +36,17 @@ function App() {
   ]);
 
   const handleProjectModalOpen = () => {
-    ReactGA.event({
-      category: 'Modal Interaction',
-      action: 'Project Info Opened',
-      label: 'Project Highlights Modal'
-    });
+    analytics.trackModalOpened('project_info');
     setShowProjectModal(true);
   };
 
   const handleProjectModalClose = () => {
-    ReactGA.event({
-      category: 'Modal Interaction',
-      action: 'Project Info Closed',
-      label: 'Project Highlights Modal'
-    });
+    analytics.trackModalClosed('project_info');
     setShowProjectModal(false);
   };
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: window.location.pathname, title: 'TradingMate Dashboard' });
+    analytics.trackPageView('Dashboard');
 
     const fetchLatestAnalysis = async () => {
       setInitialLoading(true);
@@ -101,11 +93,7 @@ function App() {
 
 
   const handleAnalyse = async () => {
-    ReactGA.event({
-      category: 'User Interaction',
-      action: 'Run Analysis',
-      label: 'Analysis Button Clicked'
-    });
+    analytics.trackAnalysisStarted();
 
     setLoading(true);
     setError(null);
@@ -151,11 +139,15 @@ function App() {
         setAnalysisCompletionTimestamp(completionData.timestamp);
       }
 
-      ReactGA.event({
-        category: 'Analysis',
-        action: 'Analysis Completed',
-        label: 'Success'
-      });
+      // Track analysis completion with rich data
+      analytics.trackAnalysisCompleted(analysisData);
+
+      // Track the final recommendation signal
+      analytics.trackRecommendationGenerated(
+        analysisData.trader_analysis.recommendation_signal,
+        analysisData.trader_analysis.confidence.score,
+        analysisData.technical_analysis.recommendation_signal === analysisData.sentiment_analysis.recommendation_signal
+      );
 
       setTimeout(() => {
         setShowProgressModal(false);
@@ -176,11 +168,7 @@ function App() {
         )
       );
 
-      ReactGA.event({
-        category: 'Analysis',
-        action: 'Analysis Failed',
-        label: err instanceof Error ? err.message : 'Unknown Error'
-      });
+      analytics.trackAnalysisFailed(err instanceof Error ? err.message : 'Unknown Error');
 
       setTimeout(() => {
         setShowProgressModal(false);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { TradeAnalysisResponse, TechnicalDataResponse } from '../types';
-import ReactGA from 'react-ga4';
+import analytics from '../services/analytics';
 
 // We'll import the existing Card components to reuse their content rendering
 import TechnicalAnalysisCard from './TechnicalAnalysisCard';
@@ -21,12 +21,7 @@ export default function AnalysisTabs({ analysis, technicalData }: AnalysisTabsPr
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
-
-    ReactGA.event({
-      category: 'Tab Interaction',
-      action: 'Tab Changed',
-      label: tab
-    });
+    analytics.trackTabViewed(tab, analysis);
   };
 
   const tabs = [
