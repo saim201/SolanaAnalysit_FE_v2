@@ -61,11 +61,9 @@ function App() {
         setAnalysis(latestAnalysis);
         setTechnicalData(techData);
         setTickerData(ticker);
-        // Use the completion timestamp from analysis_progress table
         if (completionData?.timestamp) {
           setAnalysisCompletionTimestamp(completionData.timestamp);
         } else if (latestAnalysis?.timestamp) {
-          // Fallback to analysis timestamp if no completion data
           setAnalysisCompletionTimestamp(latestAnalysis.timestamp);
         }
       } catch {
@@ -134,12 +132,10 @@ function App() {
       setTechnicalData(techData);
       setTickerData(ticker);
 
-      // Update completion timestamp from analysis_progress table
       if (completionData?.timestamp) {
         setAnalysisCompletionTimestamp(completionData.timestamp);
       }
 
-      // Track analysis completion with rich data
       analytics.trackAnalysisCompleted(analysisData);
 
       // Track the final recommendation signal
