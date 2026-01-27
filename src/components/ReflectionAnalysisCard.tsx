@@ -34,11 +34,11 @@ export default function ReflectionAnalysisCard({ analysis, isExpanded, onToggle,
           </div>
           <div className="glass-section p-2 rounded-lg text-center">
             <div className="text-[10px] text-gray-500 mb-0.5">Confidence</div>
-            <div className="text-sm font-bold text-blue-600">{(analysis.confidence.score * 100).toFixed(0)}%</div>
+            <div className="text-sm font-bold ">{(analysis.confidence.score * 100).toFixed(0)}%</div>
           </div>
           <div className="glass-section p-2 rounded-lg text-center">
             <div className="text-[10px] text-gray-500 mb-0.5">Alignment Score</div>
-            <div className="text-sm font-bold text-purple-600">{(analysis.agent_alignment.alignment_score * 100).toFixed(0)}%</div>
+            <div className="text-sm font-bold ">{(analysis.agent_alignment.alignment_score * 100).toFixed(0)}%</div>
           </div>
         </div>
 
